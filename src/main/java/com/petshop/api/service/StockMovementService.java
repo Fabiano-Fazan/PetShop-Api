@@ -26,15 +26,16 @@ public class StockMovementService {
         Product product = productRepository.findWithLockById(createStockMovementDTO.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + createStockMovementDTO.getProductId()));
         this.registerInput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(), createStockMovementDTO.getInvoice(), createStockMovementDTO.getPrice());
-
     }
 
     @Transactional
     public void registerInput(Product product, Integer quantity, String description, String invoice, BigDecimal price){
-        product.setQuantityInStock(product.getQuantityInStock() + quantity);
-        productRepository.save(product);
+        Product productDb = productRepository.findById(product.getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + product.getId()));
+        productDb.setQuantityInStock(product.getQuantityInStock() + quantity);
+        productRepository.save(productDb);
 
-        StockMovement stockMovement = StockMovement.newInput(product, quantity, description, invoice, price);
+        StockMovement stockMovement = StockMovement.newInput(productDb, quantity, description, invoice, price);
         stockMovementRepository.save(stockMovement);
     }
 
@@ -47,13 +48,15 @@ public class StockMovementService {
 
     @Transactional
     public void registerOutput(Product product, Integer quantity, String description, BigDecimal price, Sale sale){
-        if(product.getQuantityInStock() < quantity){
-            throw new InsufficientStockException("Not enough stock for product " + product.getName() + "Requested: " + quantity + " Available: " + product.getQuantityInStock());
+        Product productDb = productRepository.findById(product.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + product.getId()));
+        if(productDb.getQuantityInStock() < quantity){
+            throw new InsufficientStockException("Not enough stock for product " + productDb.getName() + "Requested: " + quantity + " Available: " + productDb.getQuantityInStock());
         }
-        product.setQuantityInStock(product.getQuantityInStock() - quantity);
-        productRepository.save(product);
+        productDb.setQuantityInStock(product.getQuantityInStock() - quantity);
+        productRepository.save(productDb);
 
-        StockMovement stockMovement = StockMovement.newOutput(product, quantity,description,sale, price);
+        StockMovement stockMovement = StockMovement.newOutput(productDb, quantity,description,sale, price);
         stockMovementRepository.save(stockMovement);
     }
 }

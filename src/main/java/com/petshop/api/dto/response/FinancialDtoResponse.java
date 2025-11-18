@@ -21,7 +21,7 @@ public class FinancialDtoResponse {
     private LocalDate paymentDate;
     private Integer installment;
     private Boolean isPaid;
-    private UUID clientName;
+    private UUID clientId;
     private UUID saleId;
 
 }

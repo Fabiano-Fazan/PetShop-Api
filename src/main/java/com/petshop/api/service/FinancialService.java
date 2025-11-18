@@ -1,10 +1,12 @@
 package com.petshop.api.service;
 
 import com.petshop.api.dto.request.CreateFinancialDto;
+import com.petshop.api.dto.response.FinancialDtoResponse;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.Sale;
+import com.petshop.api.model.mapper.FinancialMapper;
 import com.petshop.api.repository.ClientRepository;
 import com.petshop.api.repository.FinancialRepository;
 import com.petshop.api.repository.SaleRepository;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Slf4j
 @Service
@@ -23,6 +26,7 @@ public class FinancialService {
     private final FinancialRepository financialRepository;
     private final SaleRepository saleRepository;
     private final ClientRepository clientRepository;
+    private final FinancialMapper financialMapper;
 
     @Transactional
     public void createFinancial(Client client, Sale sale, String description, BigDecimal amount, LocalDate dueDate, LocalDate paymentDate, Boolean isPaid, Integer installment){
@@ -50,4 +54,13 @@ public class FinancialService {
                 createFinancialDTO.getIsPaid(),
                 createFinancialDTO.getInstallment());
     }
+
+    @Transactional
+    public FinancialDtoResponse getFinancialById(UUID id) {
+        return financialRepository.findById(id)
+                .map(financialMapper::toResponseDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Financial not found with ID: " + id));
+    }
+
+
 }

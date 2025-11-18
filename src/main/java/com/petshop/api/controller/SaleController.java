@@ -33,7 +33,7 @@ public class SaleController {
 
     @GetMapping("/id/{id}")
     public  ResponseEntity<SaleResponseDto> findSaleById(@PathVariable UUID id){
-        SaleResponseDto sale = saleService.findById(id);
+        SaleResponseDto sale = saleService.getSaleById(id);
         return ResponseEntity.ok(sale);
     }
 

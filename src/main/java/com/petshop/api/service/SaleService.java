@@ -14,11 +14,9 @@ import com.petshop.api.model.mapper.SaleMapper;
 import com.petshop.api.repository.ClientRepository;
 import com.petshop.api.repository.ProductRepository;
 import com.petshop.api.repository.SaleRepository;
-import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +75,7 @@ public class SaleService {
         return saleMapper.toResponseDto(savedSale);
     }
 
-    public SaleResponseDto findById(UUID id) {
+    public SaleResponseDto getSaleById(UUID id) {
         return saleRepository.findById(id)
                 .map(saleMapper::toResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + id));

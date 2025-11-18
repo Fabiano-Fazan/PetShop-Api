@@ -33,7 +33,7 @@ public class VeterinarianService {
     public VeterinarianResponseDto getVeterinarianById(UUID id){
         return veterinarianRepository.findById(id)
                 .map(veterinarianMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found with ID: " + id));
     }
 
     public Page<VeterinarianResponseDto> getVeterinarianByNameContainingIgnoreCase(String name, Pageable pageable){
