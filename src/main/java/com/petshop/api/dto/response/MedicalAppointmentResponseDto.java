@@ -17,13 +17,8 @@ import java.util.UUID;
 public class MedicalAppointmentResponseDto {
 
     private UUID id;
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime appointmentStartTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime appointmentEndTime;
-
     private String appointmentStatus;
     private String diagnosis;
     private String treatment;

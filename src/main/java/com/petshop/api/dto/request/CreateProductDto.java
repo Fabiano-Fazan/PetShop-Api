@@ -1,6 +1,6 @@
 package com.petshop.api.dto.request;
 
-import com.petshop.api.model.entities.ProductCategory;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

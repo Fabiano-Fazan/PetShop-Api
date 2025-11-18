@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/stock")
-public class StockMovimentController {
+public class StockMovementController {
 
     private final StockMovementService stockMovementService;
 
