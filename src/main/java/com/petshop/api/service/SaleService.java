@@ -32,6 +32,7 @@ public class SaleService {
     private final ProductRepository productRepository;
     private final ClientRepository clientRepository;
     private final StockMovementService stockMovementService;
+    private final FinancialService financialService;
 
     @Transactional
     public SaleResponseDto createSale(CreateSaleDto createSaleDTO) {
@@ -72,6 +73,7 @@ public class SaleService {
                     savedSale
             );
         }
+
         return saleMapper.toResponseDto(savedSale);
     }
 

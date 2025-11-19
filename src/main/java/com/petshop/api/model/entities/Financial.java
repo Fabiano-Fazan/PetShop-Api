@@ -1,8 +1,10 @@
 package com.petshop.api.model.entities;
 
+import com.petshop.api.dto.response.FinancialDtoResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.lang.ScopedValue;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -69,4 +71,5 @@ public class Financial {
                 .installment(installment)
                 .build();
     }
+
 }
