@@ -47,28 +47,10 @@ public class StockMovement {
 
     private String invoice;
 
-    public static StockMovement newInput(Product product, Integer quantity, String description, String invoice, BigDecimal price){
-        return StockMovement.builder()
-                .product(product)
-                .quantity(quantity)
-                .type(TypeMoviment.INPUT)
-                .dateMovement(LocalDateTime.now())
-                .description(description)
-                .invoice(invoice)
-                .price(price)
-                .build();
+    @PrePersist
+    public void createdStockAt() {
+        if(dateMovement == null){
+            dateMovement = LocalDateTime.now();
+        }
     }
-
-    public static StockMovement newOutput(Product product, Integer quantity, String description, Sale sale, BigDecimal price){
-        return StockMovement.builder()
-                .product(product)
-                .quantity(quantity)
-                .type(TypeMoviment.OUTPUT)
-                .dateMovement(LocalDateTime.now())
-                .description(description)
-                .sale(sale)
-                .price(price)
-                .build();
-    }
-
 }

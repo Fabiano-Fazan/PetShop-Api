@@ -1,10 +1,8 @@
 package com.petshop.api.model.entities;
 
-import com.petshop.api.dto.response.FinancialDtoResponse;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.lang.ScopedValue;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -57,19 +55,6 @@ public class Financial {
         if (dateCreated == null) {
             dateCreated = LocalDate.now();
         }
-    }
-
-    public static Financial createFinancial(Client client, Sale sale, String description, BigDecimal amount, LocalDate dueDate, LocalDate paymentDate,Boolean isPaid, Integer installment){
-        return Financial.builder()
-                .client(client)
-                .sale(sale)
-                .description(description)
-                .amount(amount)
-                .dueDate(dueDate)
-                .paymentDate(paymentDate)
-                .isPaid(false)
-                .installment(installment)
-                .build();
     }
 
 }

@@ -6,6 +6,7 @@ import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Product;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.entities.StockMovement;
+import com.petshop.api.model.enums.TypeMoviment;
 import com.petshop.api.repository.ProductRepository;
 import com.petshop.api.repository.StockMovementRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Service
@@ -35,7 +37,14 @@ public class StockMovementService {
         productDb.setQuantityInStock(product.getQuantityInStock() + quantity);
         productRepository.save(productDb);
 
-        StockMovement stockMovement = StockMovement.newInput(productDb, quantity, description, invoice, price);
+        StockMovement stockMovement = StockMovement.builder()
+                .product(productDb)
+                .quantity(quantity)
+                .description(description)
+                .invoice(invoice)
+                .price(price)
+                .type(TypeMoviment.INPUT)
+                .build();
         stockMovementRepository.save(stockMovement);
     }
 
@@ -56,7 +65,15 @@ public class StockMovementService {
         productDb.setQuantityInStock(product.getQuantityInStock() - quantity);
         productRepository.save(productDb);
 
-        StockMovement stockMovement = StockMovement.newOutput(productDb, quantity,description,sale, price);
+        StockMovement stockMovement = StockMovement.builder()
+                .product(productDb)
+                .quantity(quantity)
+                .description(description)
+                .price(price)
+                .sale(sale)
+                .type(TypeMoviment.OUTPUT)
+                .build();
         stockMovementRepository.save(stockMovement);
+
     }
 }

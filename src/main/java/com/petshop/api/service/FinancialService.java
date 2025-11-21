@@ -29,21 +29,19 @@ public class FinancialService {
     private final ClientRepository clientRepository;
     private final FinancialMapper financialMapper;
 
-
-    @Transactional
     public FinancialDtoResponse getFinancialById(UUID id) {
         return financialRepository.findById(id)
                 .map(financialMapper::toResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Financial not found with ID: " + id));
     }
 
-    @Transactional
+
     public Page<FinancialDtoResponse> getAllFinancial(Pageable pageable){
         return financialRepository.findAll(pageable)
                 .map(financialMapper::toResponseDto);
     }
 
-    @Transactional
+
     public Page<FinancialDtoResponse> getByClientName(String name, Pageable pageable) {
         return financialRepository.findByClientName(name, pageable)
                 .map(financialMapper::toResponseDto);

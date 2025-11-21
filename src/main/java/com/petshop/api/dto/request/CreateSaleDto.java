@@ -1,6 +1,7 @@
 package com.petshop.api.dto.request;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -20,5 +21,11 @@ public class CreateSaleDto {
     @NotEmpty(message = "Product sales list is required")
     @Valid
     private List<CreateProductSaleDto> productSales;
+
+    @Min(value = 1, message = "The sale must have at least one installment.")
+    private Integer installments;
+
+    @Min(value = 0, message = "The interval must be positive")
+    private Integer intervalDays;
 
 }
