@@ -1,5 +1,6 @@
 package com.petshop.api.service;
 
+import com.petshop.api.domain.FinancialInstallmentGenerator;
 import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.dto.response.FinancialDtoResponse;
 import com.petshop.api.exception.ResourceNotFoundException;
@@ -16,8 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -28,6 +30,8 @@ public class FinancialService {
     private final SaleRepository saleRepository;
     private final ClientRepository clientRepository;
     private final FinancialMapper financialMapper;
+    private final FinancialInstallmentGenerator installmentGenerator;
+
 
     public FinancialDtoResponse getFinancialById(UUID id) {
         return financialRepository.findById(id)
@@ -35,12 +39,10 @@ public class FinancialService {
                 .orElseThrow(() -> new ResourceNotFoundException("Financial not found with ID: " + id));
     }
 
-
     public Page<FinancialDtoResponse> getAllFinancial(Pageable pageable){
         return financialRepository.findAll(pageable)
                 .map(financialMapper::toResponseDto);
     }
-
 
     public Page<FinancialDtoResponse> getByClientName(String name, Pageable pageable) {
         return financialRepository.findByClientName(name, pageable)
@@ -48,20 +50,15 @@ public class FinancialService {
     }
 
     @Transactional
-    public void createFinancial(Client client, Sale sale, String description, BigDecimal amount, LocalDate dueDate, LocalDate paymentDate, Boolean isPaid, Integer installment){
-        Sale saleDB = saleRepository.findById(sale.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + sale.getId()));
-        client = clientRepository.findById(sale.getClient().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + sale.getClient().getId()));
-        Financial financial = Financial.createFinancial(client,
-                saleDB,
-                description,
-                amount,
-                dueDate,
-                paymentDate,
-                isPaid,
-                installment);
-        financialRepository.save(financial);
+    public void createFinancialFromSale(Sale sale, Integer qtyInstallments, Integer intervalDays){
+        LocalDate today = LocalDate.now();
+        List<Financial> installments = installmentGenerator.generateInstallments(
+                sale,
+                qtyInstallments,
+                intervalDays,
+                today
+        );
+        financialRepository.saveAll(installments);
     }
 
     @Transactional

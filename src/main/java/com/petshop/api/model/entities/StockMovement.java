@@ -1,6 +1,6 @@
 package com.petshop.api.model.entities;
 
-import com.petshop.api.model.enums.TypeMoviment;
+import com.petshop.api.model.enums.TypeMovement;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,7 +28,7 @@ public class StockMovement {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TypeMoviment type;
+    private TypeMovement type;
 
     @Column(nullable = false)
     private Integer quantity;

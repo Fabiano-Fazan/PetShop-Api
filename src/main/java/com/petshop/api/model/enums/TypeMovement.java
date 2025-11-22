@@ -1,6 +1,6 @@
 package com.petshop.api.model.enums;
 
-public enum TypeMoviment {
+public enum TypeMovement {
     INPUT,
     OUTPUT;
 }
