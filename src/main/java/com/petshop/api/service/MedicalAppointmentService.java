@@ -54,7 +54,7 @@ public class MedicalAppointmentService {
 
         boolean hasConflict = medicalAppointmentRepository.existsConflictingAppointment(createMedicalAppointmentDTO.getVeterinarianId(), start, end);
         if (hasConflict) {
-            throw new AppointmentDateTimeAlreadyExistsException("This time slot is already booked for the veterinarian.");
+            throw new AppointmentDateTimeAlreadyExistsException("This time slot is already booked for the veterinarian : " + createMedicalAppointmentDTO.getVeterinarianId());
         }
 
         Client client = clientRepository.findById(createMedicalAppointmentDTO.getClientId())

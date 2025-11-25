@@ -9,5 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface FinancialRepository extends JpaRepository<Financial, UUID> {
-    Page<Financial> findByClientName(String name, Pageable pageable);
+
+    Page<Financial> findByClientByNameContainingIgnoreCase(String name, Pageable pageable);
+
 }

@@ -37,7 +37,7 @@ public class SaleGenerator {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public void registerStockMovements(Sale sale){
+    public void registerStockMovementsFromSale(Sale sale){
         sale.getProductSales().forEach(item -> stockMovementService.registerOutput(
                 item.getProduct(),
                 item.getQuantity(),

@@ -2,7 +2,7 @@ package com.petshop.api.service;
 
 import com.petshop.api.domain.FinancialInstallmentGenerator;
 import com.petshop.api.dto.request.CreateFinancialDto;
-import com.petshop.api.dto.response.FinancialDtoResponse;
+import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
@@ -33,19 +33,19 @@ public class FinancialService {
     private final FinancialInstallmentGenerator installmentGenerator;
 
 
-    public FinancialDtoResponse getFinancialById(UUID id) {
+    public FinancialResponseDto getFinancialById(UUID id) {
         return financialRepository.findById(id)
                 .map(financialMapper::toResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Financial not found with ID: " + id));
     }
 
-    public Page<FinancialDtoResponse> getAllFinancial(Pageable pageable){
+    public Page<FinancialResponseDto> getAllFinancial(Pageable pageable){
         return financialRepository.findAll(pageable)
                 .map(financialMapper::toResponseDto);
     }
 
-    public Page<FinancialDtoResponse> getByClientName(String name, Pageable pageable) {
-        return financialRepository.findByClientName(name, pageable)
+    public Page<FinancialResponseDto> getByClientNameContainingIgnoreCase(String name, Pageable pageable) {
+        return financialRepository.findByClientByNameContainingIgnoreCase(name, pageable)
                 .map(financialMapper::toResponseDto);
     }
 
@@ -62,7 +62,7 @@ public class FinancialService {
     }
 
     @Transactional
-    public FinancialDtoResponse createManualFinancial(CreateFinancialDto createFinancialDTO){
+    public FinancialResponseDto createManualFinancial(CreateFinancialDto createFinancialDTO){
         Sale sale = saleRepository.findById(createFinancialDTO.getSaleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + createFinancialDTO.getSaleId()));
         Client client = clientRepository.findById(sale.getClient().getId())

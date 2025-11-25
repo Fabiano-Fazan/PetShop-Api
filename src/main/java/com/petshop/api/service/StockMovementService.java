@@ -59,7 +59,8 @@ public class StockMovementService {
         Product productDb = productRepository.findById(product.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + product.getId()));
         if(productDb.getQuantityInStock() < quantity){
-            throw new InsufficientStockException("Not enough stock for product " + productDb.getName() + "Requested: " + quantity + " Available: " + productDb.getQuantityInStock());
+            throw new InsufficientStockException("Not enough stock for product %s. Requested: %s Available: %s"
+                    .formatted(productDb.getName(), quantity, productDb.getQuantityInStock()));
         }
         productDb.setQuantityInStock(product.getQuantityInStock() - quantity);
         productRepository.save(productDb);

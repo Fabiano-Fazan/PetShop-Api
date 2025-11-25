@@ -13,7 +13,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class FinancialDtoResponse {
+public class FinancialResponseDto {
 
     private String description;
     private BigDecimal amount;

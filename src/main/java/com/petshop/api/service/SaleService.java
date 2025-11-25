@@ -61,7 +61,7 @@ public class SaleService {
         BigDecimal totalValue = saleGenerator.calculateSaleTotal(createSaleDTO);
         newSale.setTotalValue(totalValue);
         Sale savedSale = saleRepository.save(newSale);
-        saleGenerator.registerStockMovements(savedSale);
+        saleGenerator.registerStockMovementsFromSale(savedSale);
 
         financialService.createFinancialFromSale(
                 savedSale,
@@ -80,9 +80,10 @@ public class SaleService {
 
         if (sale.getStatus() == SaleStatus.CANCELED) {
             throw new IllegalStateException("This sale is already canceled");
+        }else{
+            sale.setStatus(SaleStatus.CANCELED);
         }
 
-        sale.setStatus(SaleStatus.CANCELED);
         Sale canceledSale = saleRepository.save(sale);
 
         for (ProductSale productSold : canceledSale.getProductSales()) {
@@ -96,7 +97,10 @@ public class SaleService {
                     null
             );
         }
-        financialService.deleteFinancial(id);
+        for (Financial financialCreated : canceledSale.getFinancial()){
+            financialService.deleteFinancial(financialCreated.getId());
+        }
+
         return saleMapper.toResponseDto(canceledSale);
 
     }

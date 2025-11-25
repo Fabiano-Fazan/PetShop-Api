@@ -1,8 +1,10 @@
 package com.petshop.api.model.mapper;
 
+import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.dto.response.ProductSaleResponseDto;
 import com.petshop.api.dto.response.SaleResponseDto;
 import com.petshop.api.model.entities.Client;
+import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.Product;
 import com.petshop.api.model.entities.ProductSale;
 import com.petshop.api.model.entities.Sale;
@@ -14,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-12T20:42:33-0300",
+    date = "2025-11-24T20:36:55-0300",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
 )
 @Component
@@ -34,6 +36,7 @@ public class SaleMapperImpl implements SaleMapper {
         saleResponseDto.setSaleDate( sale.getSaleDate() );
         saleResponseDto.setTotalValue( sale.getTotalValue() );
         saleResponseDto.setProductSales( productSaleListToProductSaleResponseDtoList( sale.getProductSales() ) );
+        saleResponseDto.setFinancial( financialListToFinancialResponseDtoList( sale.getFinancial() ) );
 
         return saleResponseDto;
     }
@@ -92,6 +95,36 @@ public class SaleMapperImpl implements SaleMapper {
         List<ProductSaleResponseDto> list1 = new ArrayList<ProductSaleResponseDto>( list.size() );
         for ( ProductSale productSale : list ) {
             list1.add( toProductSaleDto( productSale ) );
+        }
+
+        return list1;
+    }
+
+    protected FinancialResponseDto financialToFinancialResponseDto(Financial financial) {
+        if ( financial == null ) {
+            return null;
+        }
+
+        FinancialResponseDto financialResponseDto = new FinancialResponseDto();
+
+        financialResponseDto.setDescription( financial.getDescription() );
+        financialResponseDto.setAmount( financial.getAmount() );
+        financialResponseDto.setDueDate( financial.getDueDate() );
+        financialResponseDto.setPaymentDate( financial.getPaymentDate() );
+        financialResponseDto.setInstallment( financial.getInstallment() );
+        financialResponseDto.setIsPaid( financial.getIsPaid() );
+
+        return financialResponseDto;
+    }
+
+    protected List<FinancialResponseDto> financialListToFinancialResponseDtoList(List<Financial> list) {
+        if ( list == null ) {
+            return null;
+        }
+
+        List<FinancialResponseDto> list1 = new ArrayList<FinancialResponseDto>( list.size() );
+        for ( Financial financial : list ) {
+            list1.add( financialToFinancialResponseDto( financial ) );
         }
 
         return list1;

@@ -39,6 +39,9 @@ public class Sale {
     @Column(nullable = false)
     private SaleStatus status;
 
+    @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Financial> financial = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
