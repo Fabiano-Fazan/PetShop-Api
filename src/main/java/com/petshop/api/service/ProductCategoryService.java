@@ -1,5 +1,6 @@
 package com.petshop.api.service;
 
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateProductCategoryDto;
 import com.petshop.api.dto.request.UpdateProductCategoryDto;
 import com.petshop.api.dto.response.ProductCategoryResponseDto;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class ProductCategoryService {
     private final ProductCategoryMapper productCategoryMapper;
     private final ProductCategoryRepository productCategoryRepository;
+    private final ValidatorEntities validatorEntities;
 
     public ProductCategoryResponseDto getProductCategoryById(UUID id){
         return productCategoryRepository.findById(id)
@@ -41,17 +43,14 @@ public class ProductCategoryService {
     @Transactional
     public ProductCategoryResponseDto createProductCategory(CreateProductCategoryDto createProductCategoryDTO){
         ProductCategory productCategory = productCategoryMapper.toEntity(createProductCategoryDTO);
-        ProductCategory savedProductCategory = productCategoryRepository.save(productCategory);
-        return productCategoryMapper.toResponseDto(savedProductCategory);
+        return productCategoryMapper.toResponseDto(productCategoryRepository.save(productCategory));
     }
 
     @Transactional
     public ProductCategoryResponseDto updateProductCategory(UUID id, UpdateProductCategoryDto updateProductCategoryDTO) {
-        ProductCategory productCategory = productCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+        ProductCategory productCategory = validatorEntities.validateProductCategory(id);
         productCategoryMapper.updateProductCategoryFromDTO(updateProductCategoryDTO, productCategory);
-        productCategoryRepository.save(productCategory);
-        return productCategoryMapper.toResponseDto(productCategory);
+        return productCategoryMapper.toResponseDto(productCategoryRepository.save(productCategory));
     }
 
     @Transactional

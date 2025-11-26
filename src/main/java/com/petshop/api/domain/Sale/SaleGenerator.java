@@ -1,4 +1,4 @@
-package com.petshop.api.domain;
+package com.petshop.api.domain.Sale;
 
 import com.petshop.api.dto.request.CreateProductSaleDto;
 import com.petshop.api.dto.request.CreateSaleDto;

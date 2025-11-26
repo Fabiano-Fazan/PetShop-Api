@@ -1,5 +1,6 @@
 package com.petshop.api.service;
 
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateProductDto;
 import com.petshop.api.dto.request.UpdateProductDto;
 import com.petshop.api.dto.response.ProductResponseDto;
@@ -7,7 +8,6 @@ import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Product;
 import com.petshop.api.model.entities.ProductCategory;
 import com.petshop.api.model.mapper.ProductMapper;
-import com.petshop.api.repository.ProductCategoryRepository;
 import com.petshop.api.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
-    private final ProductCategoryRepository productCategoryRepository;
+    private final ValidatorEntities validatorEntities;
 
 
     public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
@@ -50,20 +50,15 @@ public class ProductService {
     @Transactional
     public ProductResponseDto createProduct(CreateProductDto createProductDTO) {
         Product product = productMapper.toEntity(createProductDTO);
-        ProductCategory category = productCategoryRepository.findByNameContainingIgnoreCase(createProductDTO.getCategory())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with name: " + createProductDTO.getCategory()));
-        product.setCategory(category);
-        Product savedProduct = productRepository.save(product);
-        return productMapper.toResponseDto(savedProduct);
+        product.setCategory(validatorEntities.validateProductCategory(createProductDTO.getCategory().getId()));
+        return productMapper.toResponseDto(productRepository.save(product));
     }
 
     @Transactional
     public ProductResponseDto updateProduct(UUID id, UpdateProductDto updateProductDTO) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
+        Product product = validatorEntities.validateProduct(id);
         productMapper.updateProductFromDTO(updateProductDTO, product);
-        Product updatedProduct = productRepository.save(product);
-        return productMapper.toResponseDto(updatedProduct);
+        return productMapper.toResponseDto(productRepository.save(product));
     }
 
     @Transactional

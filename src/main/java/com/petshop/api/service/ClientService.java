@@ -1,11 +1,12 @@
 package com.petshop.api.service;
 
+import com.petshop.api.domain.Address.AddressUpdater;
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateClientDto;
 import com.petshop.api.dto.request.UpdateClientDto;
 import com.petshop.api.dto.response.ClientResponseDto;
 import com.petshop.api.exception.CpfAlreadyExistsException;
 import com.petshop.api.exception.ResourceNotFoundException;
-import com.petshop.api.model.entities.Address;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.mapper.AddressMapper;
 import com.petshop.api.model.mapper.ClientMapper;
@@ -21,9 +22,12 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ClientService {
+
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
     private final AddressMapper addressMapper;
+    private final ValidatorEntities validatorEntities;
+    private final AddressUpdater addressUpdater;
 
 
     public Page<ClientResponseDto> getAllClients(Pageable pageable) {
@@ -48,23 +52,16 @@ public class ClientService {
             throw new CpfAlreadyExistsException("This CPF already exists");
         }
         Client client = clientMapper.toEntity(createClientDTO);
-        Client savedClient = clientRepository.save(client);
-        return clientMapper.toResponseDto(savedClient);
+        return clientMapper.toResponseDto(clientRepository.save(client));
     }
 
     @Transactional
     public ClientResponseDto updateClient(UUID id, UpdateClientDto clientDTO) {
-        Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + id));
-        clientMapper.updateClientFromDTO(clientDTO, client);
-        if (clientDTO.getAddress() != null) {
-            if (client.getAddress() == null) {
-                client.setAddress(new Address());
-            }
-            addressMapper.updateAddressFromDTO(clientDTO.getAddress(), client.getAddress());
-        }
-        clientRepository.save(client);
-        return clientMapper.toResponseDto(client);
+        Client client = validatorEntities.validateClient(id);
+        clientMapper.updateClientFromDTO(clientDTO, client) ;
+        addressUpdater.updateAddress(clientDTO, client);
+        addressMapper.updateAddressFromDTO(clientDTO.getAddress(), client.getAddress());
+        return clientMapper.toResponseDto(clientRepository.save(client));
     }
 
     @Transactional

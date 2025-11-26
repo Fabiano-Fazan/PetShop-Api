@@ -1,5 +1,6 @@
 package com.petshop.api.service;
 
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateStockMovementDto;
 import com.petshop.api.exception.InsufficientStockException;
 import com.petshop.api.exception.ResourceNotFoundException;
@@ -19,8 +20,11 @@ import java.math.BigDecimal;
 @Service
 @RequiredArgsConstructor
 public class StockMovementService {
+
     private final StockMovementRepository stockMovementRepository;
     private final ProductRepository productRepository;
+    private final ValidatorEntities validatorEntities;
+
 
     @Transactional
     public void registerInput(CreateStockMovementDto createStockMovementDTO){
@@ -31,8 +35,7 @@ public class StockMovementService {
 
     @Transactional
     public void registerInput(Product product, Integer quantity, String description, String invoice, BigDecimal price){
-        Product productDb = productRepository.findById(product.getId())
-                        .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + product.getId()));
+        Product productDb = validatorEntities.validateProduct(product.getId());
         productDb.setQuantityInStock(product.getQuantityInStock() + quantity);
         productRepository.save(productDb);
 
@@ -56,8 +59,7 @@ public class StockMovementService {
 
     @Transactional
     public void registerOutput(Product product, Integer quantity, String description, BigDecimal price, Sale sale){
-        Product productDb = productRepository.findById(product.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + product.getId()));
+        Product productDb = validatorEntities.validateProduct(product.getId());
         if(productDb.getQuantityInStock() < quantity){
             throw new InsufficientStockException("Not enough stock for product %s. Requested: %s Available: %s"
                     .formatted(productDb.getName(), quantity, productDb.getQuantityInStock()));
@@ -74,6 +76,5 @@ public class StockMovementService {
                 .type(TypeMovement.OUTPUT)
                 .build();
         stockMovementRepository.save(stockMovement);
-
     }
 }

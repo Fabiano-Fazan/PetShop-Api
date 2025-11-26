@@ -1,16 +1,14 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.FinancialInstallmentGenerator;
+import com.petshop.api.domain.Financial.FinancialInstallmentGenerator;
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.exception.ResourceNotFoundException;
-import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.mapper.FinancialMapper;
-import com.petshop.api.repository.ClientRepository;
 import com.petshop.api.repository.FinancialRepository;
-import com.petshop.api.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +25,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FinancialService {
     private final FinancialRepository financialRepository;
-    private final SaleRepository saleRepository;
-    private final ClientRepository clientRepository;
     private final FinancialMapper financialMapper;
     private final FinancialInstallmentGenerator installmentGenerator;
+    private final ValidatorEntities validatorEntities;
 
 
     public FinancialResponseDto getFinancialById(UUID id) {
@@ -63,15 +60,10 @@ public class FinancialService {
 
     @Transactional
     public FinancialResponseDto createManualFinancial(CreateFinancialDto createFinancialDTO){
-        Sale sale = saleRepository.findById(createFinancialDTO.getSaleId())
-                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + createFinancialDTO.getSaleId()));
-        Client client = clientRepository.findById(sale.getClient().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + sale.getClient().getId()));
         Financial financial = financialMapper.toEntity(createFinancialDTO);
-        financial.setClient(client);
-        financial.setSale(sale);
-        financialRepository.save(financial);
-        return financialMapper.toResponseDto(financial);
+        financial.setSale(validatorEntities.validateSale(createFinancialDTO.getSaleId()));
+        financial.setClient(validatorEntities.validateClient(createFinancialDTO.getClientId()));
+        return financialMapper.toResponseDto(financialRepository.save(financial));
     }
 
     @Transactional

@@ -1,13 +1,12 @@
 package com.petshop.api.service;
 
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.response.AnimalResponseDto;
 import com.petshop.api.dto.request.CreateAnimalDto;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Animal;
 import com.petshop.api.model.mapper.AnimalMapper;
-import com.petshop.api.model.entities.Client;
 import com.petshop.api.repository.AnimalRepository;
-import com.petshop.api.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +20,9 @@ import java.util.UUID;
 public class AnimalService {
 
     private final AnimalRepository animalRepository;
-    private final ClientRepository clientRepository;
     private final AnimalMapper animalMapper;
+    private final ValidatorEntities validatorEntities;
+
 
     public Page<AnimalResponseDto> getAllAnimals(Pageable pageable){
         return animalRepository.findAll(pageable)
@@ -31,14 +31,9 @@ public class AnimalService {
 
     @Transactional
     public AnimalResponseDto createAnimal(CreateAnimalDto createAnimalDTO){
-        Client client = clientRepository.findById(createAnimalDTO.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + createAnimalDTO.getClientId()));
-
         Animal animal = animalMapper.toEntity(createAnimalDTO);
-        animal.setClient(client);
-
-        Animal savedAnimal = animalRepository.save(animal);
-        return animalMapper.toResponseDto(savedAnimal);
+        animal.setClient(validatorEntities.validateClient(createAnimalDTO.getClientId()));
+        return animalMapper.toResponseDto(animalRepository.save(animal));
     }
 
     @Transactional

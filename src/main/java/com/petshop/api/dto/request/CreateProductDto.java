@@ -1,6 +1,7 @@
 package com.petshop.api.dto.request;
 
 
+import com.petshop.api.model.entities.ProductCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -24,7 +25,7 @@ public class CreateProductDto {
     @Positive(message = "The price needs to be positive")
     private BigDecimal price;
 
-    private String category;
+    private ProductCategory category;
 
     @NotNull(message = "The quantity in stock cannot be null")
     @Positive(message = "The quantity in stock needs to be positive")

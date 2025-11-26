@@ -1,14 +1,14 @@
 package com.petshop.api.service;
 
 
-import com.petshop.api.domain.SaleGenerator;
+import com.petshop.api.domain.Sale.SaleGenerator;
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateSaleDto;
 import com.petshop.api.dto.response.SaleResponseDto;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.*;
 import com.petshop.api.model.enums.SaleStatus;
 import com.petshop.api.model.mapper.SaleMapper;
-import com.petshop.api.repository.ClientRepository;
 import com.petshop.api.repository.SaleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,38 +22,32 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class SaleService {
+
     private final SaleRepository saleRepository;
     private final SaleMapper saleMapper;
-    private final ClientRepository clientRepository;
     private final StockMovementService stockMovementService;
     private final FinancialService financialService;
     private final SaleGenerator saleGenerator;
+    private final ValidatorEntities validatorEntities;
 
 
     public SaleResponseDto getSaleById(UUID id) {
         return saleRepository.findById(id)
                 .map(saleMapper::toResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + id));
-
     }
 
     public Page<SaleResponseDto> getAllSales(Pageable pageable) {
         return saleRepository.findAll(pageable)
                 .map(saleMapper::toResponseDto);
-
     }
 
     @Transactional
     public SaleResponseDto createSale(CreateSaleDto createSaleDTO) {
-
-        Client client = clientRepository.findById(createSaleDTO.getClientId())
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + createSaleDTO.getClientId()));
-
         Sale newSale = new Sale();
-        newSale.setClient(client);
+        newSale.setClient(validatorEntities.validateClient(createSaleDTO.getClientId()));
         newSale.setStatus(SaleStatus.COMPLETED);
         newSale.setPaymentType(createSaleDTO.getPaymentType());
-
         createSaleDTO.getProductSales().forEach(item -> {
             ProductSale productSale = saleGenerator.generateProductSale(item, newSale);
             newSale.getProductSales().add(productSale);
@@ -62,28 +56,22 @@ public class SaleService {
         newSale.setTotalValue(totalValue);
         Sale savedSale = saleRepository.save(newSale);
         saleGenerator.registerStockMovementsFromSale(savedSale);
-
         financialService.createFinancialFromSale(
                 savedSale,
                 createSaleDTO.getInstallments(),
                 createSaleDTO.getIntervalDays()
         );
-
         return saleMapper.toResponseDto(savedSale);
-
     }
 
     @Transactional
     public SaleResponseDto cancelSale(UUID id) {
-        Sale sale = saleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + id));
-
+        Sale sale = validatorEntities.validateSale(id);
         if (sale.getStatus() == SaleStatus.CANCELED) {
             throw new IllegalStateException("This sale is already canceled");
         }else{
             sale.setStatus(SaleStatus.CANCELED);
         }
-
         Sale canceledSale = saleRepository.save(sale);
 
         for (ProductSale productSold : canceledSale.getProductSales()) {
@@ -100,9 +88,7 @@ public class SaleService {
         for (Financial financialCreated : canceledSale.getFinancial()){
             financialService.deleteFinancial(financialCreated.getId());
         }
-
         return saleMapper.toResponseDto(canceledSale);
-
     }
 }
 

@@ -2,6 +2,7 @@ package com.petshop.api.service;
 
 
 
+import com.petshop.api.domain.Validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateVeterinarianCategoryDto;
 import com.petshop.api.dto.request.UpdateVeterinarianCategoryDto;
 import com.petshop.api.dto.response.VeterinarianCategoryResponseDto;
@@ -20,8 +21,11 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class VeterinarianCategoryService {
+
     private final VeterinarianCategoryMapper veterinarianCategoryMapper;
     private final VeterinarianCategoryRepository veterinarianCategoryRepository;
+    private final ValidatorEntities validatorEntities;
+
 
     public VeterinarianCategoryResponseDto getVeterinarianCategoryById(UUID id) {
         return veterinarianCategoryRepository.findById(id)
@@ -43,17 +47,14 @@ public class VeterinarianCategoryService {
     @Transactional
     public VeterinarianCategoryResponseDto createVeterinarianCategory(CreateVeterinarianCategoryDto createVeterinarianCategoryDTO) {
         VeterinarianCategory veterinarianCategory = veterinarianCategoryMapper.toEntity(createVeterinarianCategoryDTO);
-        VeterinarianCategory savedVeterinarianCategory = veterinarianCategoryRepository.save(veterinarianCategory);
-        return veterinarianCategoryMapper.toResponseDto(savedVeterinarianCategory);
+        return veterinarianCategoryMapper.toResponseDto(veterinarianCategoryRepository.save(veterinarianCategory));
     }
 
     @Transactional
     public VeterinarianCategoryResponseDto updateVeterinarianCategory(UUID id, UpdateVeterinarianCategoryDto updateVeterinarianCategoryDto){
-        VeterinarianCategory veterinarianCategory = veterinarianCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+        VeterinarianCategory veterinarianCategory = validatorEntities.validateVeterinarianCategory(id);
         veterinarianCategoryMapper.updateVeterinarianCategoryFromDTO(updateVeterinarianCategoryDto, veterinarianCategory);
-        VeterinarianCategory updatedVeterinarianCategory = veterinarianCategoryRepository.save(veterinarianCategory);
-        return veterinarianCategoryMapper.toResponseDto(updatedVeterinarianCategory);
+        return veterinarianCategoryMapper.toResponseDto(veterinarianCategoryRepository.save(veterinarianCategory));
     }
 
     @Transactional
@@ -61,6 +62,6 @@ public class VeterinarianCategoryService {
         if (!veterinarianCategoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Veterinarian category not found with ID: " + id);
         }
-            veterinarianCategoryRepository.deleteById(id);
+        veterinarianCategoryRepository.deleteById(id);
     }
 }
