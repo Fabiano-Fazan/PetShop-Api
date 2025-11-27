@@ -1,6 +1,6 @@
 package com.petshop.api.dto.response;
 
-import com.petshop.api.model.entities.Address;
+
 import lombok.*;
 
 import java.util.List;
@@ -16,6 +16,6 @@ public class ClientResponseDto {
     private String name;
     private String phone;
     private String cpf;
-    private Address address;
+    private AddressResponseDto address;
     private List<AnimalResponseDto> animals;
 }

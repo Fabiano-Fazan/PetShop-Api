@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @RestController
-    @RequestMapping("/api/v1/product-categories")
+@RequestMapping("/api/v1/product-categories")
 @RequiredArgsConstructor
 public class ProductCategoryController {
     private  final ProductCategoryService productCategoryService;

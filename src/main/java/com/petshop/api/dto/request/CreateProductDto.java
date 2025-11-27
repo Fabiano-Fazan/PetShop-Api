@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -25,7 +26,7 @@ public class CreateProductDto {
     @Positive(message = "The price needs to be positive")
     private BigDecimal price;
 
-    private ProductCategory category;
+    private UUID categoryId;
 
     @NotNull(message = "The quantity in stock cannot be null")
     @Positive(message = "The quantity in stock needs to be positive")

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -21,6 +22,6 @@ public class UpdateProductDto {
     @Positive(message = "The price needs to be positive")
     private BigDecimal price;
 
-    private ProductCategory category;
+    private UUID categoryId;
 
 }

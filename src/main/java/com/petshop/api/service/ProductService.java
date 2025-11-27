@@ -50,7 +50,7 @@ public class ProductService {
     @Transactional
     public ProductResponseDto createProduct(CreateProductDto createProductDTO) {
         Product product = productMapper.toEntity(createProductDTO);
-        product.setCategory(validatorEntities.validateProductCategory(createProductDTO.getCategory().getId()));
+        product.setCategory(validatorEntities.validateProductCategory(createProductDTO.getCategoryId()));
         return productMapper.toResponseDto(productRepository.save(product));
     }
 
