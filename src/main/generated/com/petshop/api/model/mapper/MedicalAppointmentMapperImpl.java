@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-25T21:00:22-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
+    date = "2025-11-26T19:53:32-0300",
+    comments = "version: 1.6.0, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
 )
 @Component
 public class MedicalAppointmentMapperImpl implements MedicalAppointmentMapper {
@@ -85,92 +85,50 @@ public class MedicalAppointmentMapperImpl implements MedicalAppointmentMapper {
     }
 
     private String medicalAppointmentVeterinarianName(MedicalAppointment medicalAppointment) {
-        if ( medicalAppointment == null ) {
-            return null;
-        }
         Veterinarian veterinarian = medicalAppointment.getVeterinarian();
         if ( veterinarian == null ) {
             return null;
         }
-        String name = veterinarian.getName();
-        if ( name == null ) {
-            return null;
-        }
-        return name;
+        return veterinarian.getName();
     }
 
     private UUID medicalAppointmentVeterinarianId(MedicalAppointment medicalAppointment) {
-        if ( medicalAppointment == null ) {
-            return null;
-        }
         Veterinarian veterinarian = medicalAppointment.getVeterinarian();
         if ( veterinarian == null ) {
             return null;
         }
-        UUID id = veterinarian.getId();
-        if ( id == null ) {
-            return null;
-        }
-        return id;
+        return veterinarian.getId();
     }
 
     private String medicalAppointmentClientName(MedicalAppointment medicalAppointment) {
-        if ( medicalAppointment == null ) {
-            return null;
-        }
         Client client = medicalAppointment.getClient();
         if ( client == null ) {
             return null;
         }
-        String name = client.getName();
-        if ( name == null ) {
-            return null;
-        }
-        return name;
+        return client.getName();
     }
 
     private UUID medicalAppointmentClientId(MedicalAppointment medicalAppointment) {
-        if ( medicalAppointment == null ) {
-            return null;
-        }
         Client client = medicalAppointment.getClient();
         if ( client == null ) {
             return null;
         }
-        UUID id = client.getId();
-        if ( id == null ) {
-            return null;
-        }
-        return id;
+        return client.getId();
     }
 
     private String medicalAppointmentAnimalName(MedicalAppointment medicalAppointment) {
-        if ( medicalAppointment == null ) {
-            return null;
-        }
         Animal animal = medicalAppointment.getAnimal();
         if ( animal == null ) {
             return null;
         }
-        String name = animal.getName();
-        if ( name == null ) {
-            return null;
-        }
-        return name;
+        return animal.getName();
     }
 
     private UUID medicalAppointmentAnimalId(MedicalAppointment medicalAppointment) {
-        if ( medicalAppointment == null ) {
-            return null;
-        }
         Animal animal = medicalAppointment.getAnimal();
         if ( animal == null ) {
             return null;
         }
-        UUID id = animal.getId();
-        if ( id == null ) {
-            return null;
-        }
-        return id;
+        return animal.getId();
     }
 }

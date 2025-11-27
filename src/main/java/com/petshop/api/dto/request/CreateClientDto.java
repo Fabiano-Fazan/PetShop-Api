@@ -1,11 +1,11 @@
 package com.petshop.api.dto.request;
 
 
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
@@ -30,27 +30,5 @@ public class CreateClientDto {
 
     @Valid
     @NotNull(message = "Address is required")
-     private AddressData address;
-
-    @Getter
-    @Setter
-    public static class AddressData {
-        @NotBlank(message = "Street is required")
-        private String street;
-
-        @NotBlank(message = "City is required")
-        private String city;
-
-        @NotBlank(message = "State is required")
-        @Size(min = 2, max = 2, message = "State must be 2 characters")
-        private String state;
-
-        @NotBlank(message = "ZIP code is required")
-        @Pattern(regexp = "^[0-9]{5}-?[0-9]{3}$",
-                message = "ZIP code must be in the format XXXXX-XXX or XXXXXXXX")
-        private String zipCode;
-
-        private String complement;
-
-    }
+     private CreateAddressDto address;
 }

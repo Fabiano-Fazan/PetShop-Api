@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-25T21:00:22-0300",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
+    date = "2025-11-26T19:53:32-0300",
+    comments = "version: 1.6.0, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
 )
 @Component
 public class SaleMapperImpl implements SaleMapper {
@@ -58,33 +58,19 @@ public class SaleMapperImpl implements SaleMapper {
     }
 
     private UUID saleClientId(Sale sale) {
-        if ( sale == null ) {
-            return null;
-        }
         Client client = sale.getClient();
         if ( client == null ) {
             return null;
         }
-        UUID id = client.getId();
-        if ( id == null ) {
-            return null;
-        }
-        return id;
+        return client.getId();
     }
 
     private String saleClientName(Sale sale) {
-        if ( sale == null ) {
-            return null;
-        }
         Client client = sale.getClient();
         if ( client == null ) {
             return null;
         }
-        String name = client.getName();
-        if ( name == null ) {
-            return null;
-        }
-        return name;
+        return client.getName();
     }
 
     protected List<ProductSaleResponseDto> productSaleListToProductSaleResponseDtoList(List<ProductSale> list) {
@@ -131,32 +117,18 @@ public class SaleMapperImpl implements SaleMapper {
     }
 
     private UUID productSaleProductId(ProductSale productSale) {
-        if ( productSale == null ) {
-            return null;
-        }
         Product product = productSale.getProduct();
         if ( product == null ) {
             return null;
         }
-        UUID id = product.getId();
-        if ( id == null ) {
-            return null;
-        }
-        return id;
+        return product.getId();
     }
 
     private String productSaleProductName(ProductSale productSale) {
-        if ( productSale == null ) {
-            return null;
-        }
         Product product = productSale.getProduct();
         if ( product == null ) {
             return null;
         }
-        String name = product.getName();
-        if ( name == null ) {
-            return null;
-        }
-        return name;
+        return product.getName();
     }
 }

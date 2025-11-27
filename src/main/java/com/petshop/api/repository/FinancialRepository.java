@@ -10,6 +10,6 @@ import java.util.UUID;
 
 public interface FinancialRepository extends JpaRepository<Financial, UUID> {
 
-    Page<Financial> findByClientByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Financial> findByClientNameContainingIgnoreCase(String name, Pageable pageable);
 
 }
