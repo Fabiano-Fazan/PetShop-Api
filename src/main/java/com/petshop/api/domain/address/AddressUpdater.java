@@ -1,4 +1,4 @@
-package com.petshop.api.domain.Address;
+package com.petshop.api.domain.address;
 
 import com.petshop.api.dto.request.UpdateClientDto;
 import com.petshop.api.model.entities.Address;

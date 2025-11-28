@@ -1,4 +1,4 @@
-package com.petshop.api.domain.Validator;
+package com.petshop.api.domain.validator;
 
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.*;

@@ -1,4 +1,4 @@
-package com.petshop.api.domain.Validator;
+package com.petshop.api.domain.validator;
 
 import com.petshop.api.exception.AppointmentDateTimeAlreadyExistsException;
 import com.petshop.api.repository.MedicalAppointmentRepository;

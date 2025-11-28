@@ -1,4 +1,4 @@
-package com.petshop.api.domain.Financial;
+package com.petshop.api.domain.financial;
 
 import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.Sale;

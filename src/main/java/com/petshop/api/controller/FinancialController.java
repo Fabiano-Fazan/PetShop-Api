@@ -39,7 +39,13 @@ public class FinancialController {
     @PostMapping
     public ResponseEntity<FinancialResponseDto> createFinancial(@RequestBody CreateFinancialDto createFinancialDTO){
         FinancialResponseDto createdFinancial = financialService.createManualFinancial(createFinancialDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(createdFinancial, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}/refund")
+    public ResponseEntity<FinancialResponseDto> refundFinancial(@PathVariable UUID id, @RequestParam String refundDescription) {
+        FinancialResponseDto refundedFinancial = financialService.refundFinancial(id, refundDescription);
+        return ResponseEntity.ok(refundedFinancial);
 
     }
     @DeleteMapping("/{id}")

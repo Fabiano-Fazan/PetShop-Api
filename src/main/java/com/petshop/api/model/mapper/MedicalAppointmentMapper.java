@@ -25,10 +25,9 @@ public interface MedicalAppointmentMapper {
     @Mapping(target = "animalId", source = "animal.id")
     @Mapping(target = "appointmentStatus", source = "appointmentStatus")
     MedicalAppointmentResponseDto toResponseDto(MedicalAppointment medicalAppointment);
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateMedicalAppointmentDto (UpdateMedicalAppointmentDto updateMedicalAppointmentDto, @MappingTarget MedicalAppointment medicalAppointment);
 }
+
+
 
 
 

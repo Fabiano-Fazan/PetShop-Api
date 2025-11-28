@@ -39,4 +39,6 @@ public class CreateFinancialDto {
     @NotNull(message = "Sale ID is required")
     private UUID saleId;
 
+    private String notes;
+
 }

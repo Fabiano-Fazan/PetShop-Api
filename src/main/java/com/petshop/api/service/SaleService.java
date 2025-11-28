@@ -1,8 +1,8 @@
 package com.petshop.api.service;
 
 
-import com.petshop.api.domain.Sale.SaleGenerator;
-import com.petshop.api.domain.Validator.ValidatorEntities;
+import com.petshop.api.domain.sale.SaleGenerator;
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateSaleDto;
 import com.petshop.api.dto.response.SaleResponseDto;
 import com.petshop.api.exception.ResourceNotFoundException;
@@ -69,9 +69,17 @@ public class SaleService {
         Sale sale = validatorEntities.validateSale(id);
         if (sale.getStatus() == SaleStatus.CANCELED) {
             throw new IllegalStateException("This sale is already canceled");
-        }else{
-            sale.setStatus(SaleStatus.CANCELED);
         }
+
+        boolean hasPaidInstallments = sale.getFinancial().stream()
+                .anyMatch(Financial::getIsPaid);
+
+        if (hasPaidInstallments) {
+            throw new IllegalStateException("It is not possible to cancel a sale that has already been paid in installments.");
+        }
+
+        sale.setStatus(SaleStatus.CANCELED);
+
         Sale canceledSale = saleRepository.save(sale);
 
         for (ProductSale productSold : canceledSale.getProductSales()) {
@@ -85,6 +93,7 @@ public class SaleService {
                     null
             );
         }
+
         for (Financial financialCreated : canceledSale.getFinancial()){
             financialService.deleteFinancial(financialCreated.getId());
         }

@@ -1,6 +1,6 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.Validator.ValidatorEntities;
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateStockMovementDto;
 import com.petshop.api.exception.InsufficientStockException;
 import com.petshop.api.exception.ResourceNotFoundException;

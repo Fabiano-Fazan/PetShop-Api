@@ -49,6 +49,7 @@ public class Financial {
     @JoinColumn(name = "sale_id")
     private Sale sale;
 
+    private String notes;
 
     @PrePersist
     public void createdFinancialAt() {

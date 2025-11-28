@@ -1,7 +1,7 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.Financial.FinancialInstallmentGenerator;
-import com.petshop.api.domain.Validator.ValidatorEntities;
+import com.petshop.api.domain.financial.FinancialInstallmentGenerator;
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.exception.ResourceNotFoundException;
@@ -63,6 +63,18 @@ public class FinancialService {
         Financial financial = financialMapper.toEntity(createFinancialDTO);
         financial.setSale(validatorEntities.validateSale(createFinancialDTO.getSaleId()));
         financial.setClient(validatorEntities.validateClient(createFinancialDTO.getClientId()));
+        return financialMapper.toResponseDto(financialRepository.save(financial));
+    }
+
+    @Transactional
+    public FinancialResponseDto refundFinancial(UUID id, String refundDescription){
+        Financial financial = validatorEntities.validateFinancial(id);
+        if (Boolean.FALSE.equals(financial.getIsPaid())){
+            throw new IllegalStateException("This bill is not marked as paid, making a refund impossible.");
+        }
+        financial.setIsPaid(false);
+        financial.setPaymentDate(null);
+        financial.setDescription(refundDescription);
         return financialMapper.toResponseDto(financialRepository.save(financial));
     }
 

@@ -1,9 +1,9 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.MedicalAppointment.AppointmentTimeCalculator;
-import com.petshop.api.domain.MedicalAppointment.AppointmentUpdater;
-import com.petshop.api.domain.Validator.ValidateAppointment;
-import com.petshop.api.domain.Validator.ValidatorEntities;
+import com.petshop.api.domain.medicalAppointment.AppointmentTimeCalculator;
+import com.petshop.api.domain.medicalAppointment.AppointmentUpdater;
+import com.petshop.api.domain.validator.ValidateAppointment;
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateMedicalAppointmentDto;
 import com.petshop.api.dto.request.UpdateMedicalAppointmentDto;
 import com.petshop.api.dto.response.MedicalAppointmentResponseDto;
@@ -60,7 +60,6 @@ public class MedicalAppointmentService {
     @Transactional
     public MedicalAppointmentResponseDto updateMedicalAppointment(UUID id, UpdateMedicalAppointmentDto updateMedicalAppointmentDto){
         MedicalAppointment medicalAppointment = validatorEntities.validateMedicalAppointment(id);
-        medicalAppointmentMapper.updateMedicalAppointmentDto(updateMedicalAppointmentDto, medicalAppointment);
         updaterAppointment.updateAppointment(medicalAppointment, updateMedicalAppointmentDto);
         return medicalAppointmentMapper.toResponseDto(medicalAppointmentRepository.save(medicalAppointment));
     }

@@ -1,7 +1,7 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.Address.AddressUpdater;
-import com.petshop.api.domain.Validator.ValidatorEntities;
+import com.petshop.api.domain.address.AddressUpdater;
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateClientDto;
 import com.petshop.api.dto.request.UpdateClientDto;
 import com.petshop.api.dto.response.ClientResponseDto;

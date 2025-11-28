@@ -1,6 +1,6 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.Validator.ValidatorEntities;
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.response.AnimalResponseDto;
 import com.petshop.api.dto.request.CreateAnimalDto;
 import com.petshop.api.exception.ResourceNotFoundException;

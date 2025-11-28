@@ -1,4 +1,4 @@
-package com.petshop.api.domain.MedicalAppointment;
+package com.petshop.api.domain.medicalAppointment;
 
 import org.springframework.stereotype.Component;
 

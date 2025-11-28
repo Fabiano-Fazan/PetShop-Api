@@ -1,6 +1,6 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.Validator.ValidatorEntities;
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateProductCategoryDto;
 import com.petshop.api.dto.request.UpdateProductCategoryDto;
 import com.petshop.api.dto.response.ProductCategoryResponseDto;
