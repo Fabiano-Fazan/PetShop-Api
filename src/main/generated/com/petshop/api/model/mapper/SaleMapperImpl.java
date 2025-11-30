@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-27T13:28:06-0300",
+    date = "2025-11-30T11:19:40-0300",
     comments = "version: 1.6.0, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
 )
 @Component
@@ -99,6 +99,7 @@ public class SaleMapperImpl implements SaleMapper {
         financialResponseDto.setPaymentDate( financial.getPaymentDate() );
         financialResponseDto.setInstallment( financial.getInstallment() );
         financialResponseDto.setIsPaid( financial.getIsPaid() );
+        financialResponseDto.setNotes( financial.getNotes() );
 
         return financialResponseDto;
     }

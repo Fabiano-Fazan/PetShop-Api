@@ -1,6 +1,6 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.address.AddressUpdater;
+
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateClientDto;
 import com.petshop.api.dto.request.UpdateClientDto;
@@ -27,7 +27,6 @@ public class ClientService {
     private final ClientMapper clientMapper;
     private final AddressMapper addressMapper;
     private final ValidatorEntities validatorEntities;
-    private final AddressUpdater addressUpdater;
 
 
     public Page<ClientResponseDto> getAllClients(Pageable pageable) {
@@ -59,7 +58,6 @@ public class ClientService {
     public ClientResponseDto updateClient(UUID id, UpdateClientDto clientDTO) {
         Client client = validatorEntities.validateClient(id);
         clientMapper.updateClientFromDTO(clientDTO, client) ;
-        addressUpdater.updateAddress(clientDTO, client);
         addressMapper.updateAddressFromDTO(clientDTO.getAddress(), client.getAddress());
         return clientMapper.toResponseDto(clientRepository.save(client));
     }

@@ -26,14 +26,14 @@ public class VeterinarianController {
         return ResponseEntity.ok(allVeterinarians);
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<VeterinarianResponseDto> getVeterinarianById(@PathVariable UUID id){
         VeterinarianResponseDto veterinarianById = veterinarianService.getVeterinarianById(id);
         return ResponseEntity.ok(veterinarianById);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Page<VeterinarianResponseDto>> getVeterinarianByName(@PathVariable String name, Pageable pageable){
+    @GetMapping("/name")
+    public ResponseEntity<Page<VeterinarianResponseDto>> getVeterinarianByName(@RequestParam String name, Pageable pageable){
         Page<VeterinarianResponseDto> veterinarianByName = veterinarianService.getVeterinarianByNameContainingIgnoreCase(name,pageable);
         return ResponseEntity.ok(veterinarianByName);
     }

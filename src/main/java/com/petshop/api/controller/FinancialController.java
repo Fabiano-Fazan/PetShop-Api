@@ -30,8 +30,8 @@ public class FinancialController {
         return ResponseEntity.ok(financial);
     }
 
-    @GetMapping("/client/{name}")
-    public ResponseEntity<Page<FinancialResponseDto>> getByClientName(@PathVariable String name, Pageable pageable){
+    @GetMapping("/client")
+    public ResponseEntity<Page<FinancialResponseDto>> getByClientName(@RequestParam String name, Pageable pageable){
         Page<FinancialResponseDto> financials = financialService.getByClientNameContainingIgnoreCase(name, pageable);
         return ResponseEntity.ok(financials);
     }

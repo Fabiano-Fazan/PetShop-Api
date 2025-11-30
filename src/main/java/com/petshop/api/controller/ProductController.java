@@ -28,20 +28,20 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/id")
     public ResponseEntity<ProductResponseDto> getProductById(@PathVariable UUID id) {
         ProductResponseDto productById = productService.getProductById(id);
         return ResponseEntity.ok(productById);
     }
 
-    @GetMapping("/category/{category}")
-    public ResponseEntity<Page<ProductResponseDto>> getProductByCategory(@PathVariable("category") ProductCategory productCategory, Pageable pageable) {
+    @GetMapping("/category")
+    public ResponseEntity<Page<ProductResponseDto>> getProductByCategory(@RequestParam ProductCategory productCategory, Pageable pageable) {
         Page<ProductResponseDto> productsByCategory = productService.getProductByCategory(productCategory,pageable);
         return ResponseEntity.ok(productsByCategory);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<Page<ProductResponseDto>> getProductByName(@PathVariable("name") String name, Pageable pageable) {
+    @GetMapping("/name")
+    public ResponseEntity<Page<ProductResponseDto>> getProductByName(@RequestParam String name, Pageable pageable) {
         Page<ProductResponseDto> productsByName = productService.getProductByName(name,pageable);
         return ResponseEntity.ok(productsByName);
     }

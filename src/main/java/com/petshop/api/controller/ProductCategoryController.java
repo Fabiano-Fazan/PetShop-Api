@@ -32,8 +32,8 @@ public class ProductCategoryController {
         return ResponseEntity.ok(productCategoryById);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<ProductCategoryResponseDto> getByName(@PathVariable("name") String name){
+    @GetMapping("/name")
+    public ResponseEntity<ProductCategoryResponseDto> getByName(@RequestParam String name){
         ProductCategoryResponseDto productCategoryByName = productCategoryService.getByName(name);
         return ResponseEntity.ok(productCategoryByName);
     }

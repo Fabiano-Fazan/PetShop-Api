@@ -1,7 +1,6 @@
 package com.petshop.api.model.mapper;
 
 import com.petshop.api.dto.request.CreateMedicalAppointmentDto;
-import com.petshop.api.dto.request.UpdateMedicalAppointmentDto;
 import com.petshop.api.dto.response.MedicalAppointmentResponseDto;
 import com.petshop.api.model.entities.Animal;
 import com.petshop.api.model.entities.Client;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-27T13:28:06-0300",
+    date = "2025-11-30T11:19:40-0300",
     comments = "version: 1.6.0, compiler: javac, environment: Java 21.0.8 (Amazon.com Inc.)"
 )
 @Component
@@ -62,26 +61,6 @@ public class MedicalAppointmentMapperImpl implements MedicalAppointmentMapper {
         medicalAppointmentResponseDto.setTreatment( medicalAppointment.getTreatment() );
 
         return medicalAppointmentResponseDto;
-    }
-
-    @Override
-    public void updateMedicalAppointmentDto(UpdateMedicalAppointmentDto updateMedicalAppointmentDto, MedicalAppointment medicalAppointment) {
-        if ( updateMedicalAppointmentDto == null ) {
-            return;
-        }
-
-        if ( updateMedicalAppointmentDto.getDiagnosis() != null ) {
-            medicalAppointment.setDiagnosis( updateMedicalAppointmentDto.getDiagnosis() );
-        }
-        if ( updateMedicalAppointmentDto.getTreatment() != null ) {
-            medicalAppointment.setTreatment( updateMedicalAppointmentDto.getTreatment() );
-        }
-        if ( updateMedicalAppointmentDto.getAppointmentStartTime() != null ) {
-            medicalAppointment.setAppointmentStartTime( updateMedicalAppointmentDto.getAppointmentStartTime() );
-        }
-        if ( updateMedicalAppointmentDto.getDurationMinutes() != null ) {
-            medicalAppointment.setDurationMinutes( updateMedicalAppointmentDto.getDurationMinutes() );
-        }
     }
 
     private String medicalAppointmentVeterinarianName(MedicalAppointment medicalAppointment) {

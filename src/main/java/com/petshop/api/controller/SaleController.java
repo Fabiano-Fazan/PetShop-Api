@@ -25,16 +25,16 @@ public class SaleController {
         return ResponseEntity.ok(sales);
     }
 
+    @GetMapping("/id")
+    public  ResponseEntity<SaleResponseDto> findSaleById(@PathVariable UUID id){
+        SaleResponseDto sale = saleService.getSaleById(id);
+        return ResponseEntity.ok(sale);
+    }
+
     @PostMapping
     public ResponseEntity<SaleResponseDto> createSale(@Valid @RequestBody CreateSaleDto createSaleDTO){
         SaleResponseDto createdSale = saleService.createSale(createSaleDTO);
         return new ResponseEntity<>(createdSale, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/id/{id}")
-    public  ResponseEntity<SaleResponseDto> findSaleById(@PathVariable UUID id){
-        SaleResponseDto sale = saleService.getSaleById(id);
-        return ResponseEntity.ok(sale);
     }
 
     @PostMapping("/{id}/cancel")

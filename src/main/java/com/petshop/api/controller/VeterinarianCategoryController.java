@@ -27,14 +27,14 @@ public class VeterinarianCategoryController {
         return ResponseEntity.ok(allVeterinarianCategories);
     }
 
-    @GetMapping("/id/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<VeterinarianCategoryResponseDto> getVeterinarianCategoryById(@PathVariable UUID id) {
         VeterinarianCategoryResponseDto veterinarianCategoryById = veterinarianCategoryService.getVeterinarianCategoryById(id);
         return ResponseEntity.ok(veterinarianCategoryById);
     }
 
-    @GetMapping("/name/{name}")
-    public ResponseEntity<VeterinarianCategoryResponseDto> getByName(@PathVariable("name") String name) {
+    @GetMapping("/name")
+    public ResponseEntity<VeterinarianCategoryResponseDto> getByName(@RequestParam String name) {
         VeterinarianCategoryResponseDto veterinarianCategoryByName = veterinarianCategoryService.getByName(name);
         return ResponseEntity.ok(veterinarianCategoryByName);
     }
