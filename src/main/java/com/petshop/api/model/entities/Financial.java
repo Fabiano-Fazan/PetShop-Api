@@ -26,13 +26,13 @@ public class Financial {
     @Column(nullable = false)
     private BigDecimal amount;
 
-    @Column(nullable = false)
+    @Column(name = "date_created", nullable = false)
     private LocalDate dateCreated;
 
-    @Column(nullable = false)
+    @Column(name = "due_date",nullable = false)
     private LocalDate dueDate;
 
-    @Column(nullable = false)
+    @Column(name = "payment_date")
     private LocalDate paymentDate;
 
     @Column(nullable = false)

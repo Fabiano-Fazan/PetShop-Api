@@ -64,8 +64,8 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
-    @ExceptionHandler(EntitiesAlreadyInUseException.class)
-    public ResponseEntity<StandardError> entitiesAlreadyInUse(EntitiesAlreadyInUseException e, HttpServletRequest request){
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity<StandardError> businessException(BusinessException e, HttpServletRequest request){
 
         HttpStatus status = HttpStatus.CONFLICT;
         StandardError err = new StandardError();

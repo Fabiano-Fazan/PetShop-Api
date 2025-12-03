@@ -19,5 +19,4 @@ public class SaleResponseDto {
     private LocalDateTime saleDate;
     private BigDecimal totalValue;
     private List<ProductSaleResponseDto> productSales;
-    private List<FinancialResponseDto> financial;
 }

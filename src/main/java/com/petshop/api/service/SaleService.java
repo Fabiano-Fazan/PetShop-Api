@@ -5,6 +5,7 @@ import com.petshop.api.domain.sale.SaleGenerator;
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateSaleDto;
 import com.petshop.api.dto.response.SaleResponseDto;
+import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.*;
 import com.petshop.api.model.enums.SaleStatus;
@@ -31,15 +32,20 @@ public class SaleService {
     private final ValidatorEntities validatorEntities;
 
 
-    public SaleResponseDto getSaleById(UUID id) {
-        return saleRepository.findById(id)
-                .map(saleMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + id));
+    public Page<SaleResponseDto> getSaleByClientNameContainingIgnoreCase(String name, Pageable pageable){
+        return saleRepository.findByClientNameContainingIgnoreCase(name,pageable)
+                .map(saleMapper::toResponseDto);
     }
 
     public Page<SaleResponseDto> getAllSales(Pageable pageable) {
         return saleRepository.findAll(pageable)
                 .map(saleMapper::toResponseDto);
+    }
+
+    public SaleResponseDto getSaleById(UUID id) {
+        return saleRepository.findById(id)
+                .map(saleMapper::toResponseDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + id));
     }
 
     @Transactional
@@ -68,14 +74,14 @@ public class SaleService {
     public SaleResponseDto cancelSale(UUID id) {
         Sale sale = validatorEntities.validateSale(id);
         if (sale.getStatus() == SaleStatus.CANCELED) {
-            throw new IllegalStateException("This sale is already canceled");
+            throw new BusinessException("This sale is already canceled");
         }
 
         boolean hasPaidInstallments = sale.getFinancial().stream()
                 .anyMatch(Financial::getIsPaid);
 
         if (hasPaidInstallments) {
-            throw new IllegalStateException("It is not possible to cancel a sale that has already been paid in installments.");
+            throw new BusinessException("It is not possible to cancel a sale that has already been paid in installments.");
         }
 
         sale.setStatus(SaleStatus.CANCELED);
@@ -90,7 +96,8 @@ public class SaleService {
                     productSold.getQuantity(),
                     description,
                     null,
-                    null
+                    productSold.getUnitPrice(),
+                    sale
             );
         }
 

@@ -31,7 +31,6 @@ public class Sale {
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
 
-
     @Column(name = "total_value", precision = 10, scale = 2)
     private BigDecimal totalValue;
 

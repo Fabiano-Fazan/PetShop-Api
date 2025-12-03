@@ -25,10 +25,16 @@ public class SaleController {
         return ResponseEntity.ok(sales);
     }
 
-    @GetMapping("/id")
-    public  ResponseEntity<SaleResponseDto> findSaleById(@PathVariable UUID id){
+    @GetMapping("/{id}")
+    public  ResponseEntity<SaleResponseDto> getSaleById(@PathVariable UUID id){
         SaleResponseDto sale = saleService.getSaleById(id);
         return ResponseEntity.ok(sale);
+    }
+
+    @GetMapping("/name")
+    public ResponseEntity<Page<SaleResponseDto>> getByClientName(@RequestParam String name, Pageable pageable){
+        Page<SaleResponseDto> sales = saleService.getSaleByClientNameContainingIgnoreCase(name, pageable);
+        return ResponseEntity.ok(sales);
     }
 
     @PostMapping
@@ -37,7 +43,7 @@ public class SaleController {
         return new ResponseEntity<>(createdSale, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/cancel")
+    @PostMapping("/cancel/{id}")
     public ResponseEntity<SaleResponseDto> cancelSale(@PathVariable UUID id){
         SaleResponseDto canceledSale = saleService.cancelSale(id);
         return ResponseEntity.ok(canceledSale);

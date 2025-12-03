@@ -25,16 +25,8 @@ public class StockMovementService {
     private final ProductRepository productRepository;
     private final ValidatorEntities validatorEntities;
 
-
     @Transactional
-    public void registerInput(CreateStockMovementDto createStockMovementDTO){
-        Product product = productRepository.findWithLockById(createStockMovementDTO.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + createStockMovementDTO.getProductId()));
-        this.registerInput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(), createStockMovementDTO.getInvoice(), createStockMovementDTO.getPrice());
-    }
-
-    @Transactional
-    public void registerInput(Product product, Integer quantity, String description, String invoice, BigDecimal price){
+    public void registerInput(Product product, Integer quantity, String description, String invoice, BigDecimal price, Sale sale){
         Product productDb = validatorEntities.validateProduct(product.getId());
         productDb.setQuantityInStock(product.getQuantityInStock() + quantity);
         productRepository.save(productDb);
@@ -45,16 +37,17 @@ public class StockMovementService {
                 .description(description)
                 .invoice(invoice)
                 .price(price)
+                .sale(sale)
                 .type(TypeMovement.INPUT)
                 .build();
         stockMovementRepository.save(stockMovement);
     }
 
     @Transactional
-    public void registerOutput(CreateStockMovementDto createStockMovementDTO){
+    public void registerInput(CreateStockMovementDto createStockMovementDTO){
         Product product = productRepository.findWithLockById(createStockMovementDTO.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + createStockMovementDTO.getProductId()));
-        this.registerOutput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(),createStockMovementDTO.getPrice(), null);
+        this.registerInput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(), createStockMovementDTO.getInvoice(), createStockMovementDTO.getPrice(), null);
     }
 
     @Transactional
@@ -77,4 +70,13 @@ public class StockMovementService {
                 .build();
         stockMovementRepository.save(stockMovement);
     }
+
+    @Transactional
+    public void registerOutput(CreateStockMovementDto createStockMovementDTO){
+        Product product = productRepository.findWithLockById(createStockMovementDTO.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + createStockMovementDTO.getProductId()));
+        this.registerOutput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(),createStockMovementDTO.getPrice(), null);
+    }
+
+
 }
