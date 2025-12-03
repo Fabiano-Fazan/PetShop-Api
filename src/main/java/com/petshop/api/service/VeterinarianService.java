@@ -43,7 +43,7 @@ public class VeterinarianService {
     @Transactional
     public VeterinarianResponseDto createVeterinarian(CreateVeterinarianDto createVeterinarianDTO){
         Veterinarian veterinarian = veterinarianMapper.toEntity(createVeterinarianDTO);
-        veterinarian.setCategory(validatorEntities.validateVeterinarianCategory(createVeterinarianDTO.getCategory().getId()));
+        veterinarian.setCategory(validatorEntities.validateVeterinarianCategory(createVeterinarianDTO.getCategoryid()));
         return veterinarianMapper.toResponseDto(veterinarianRepository.save(veterinarian));
     }
 

@@ -63,4 +63,17 @@ public class ResourceExceptionHandler {
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
+
+    @ExceptionHandler(EntitiesAlreadyInUseException.class)
+    public ResponseEntity<StandardError> entitiesAlreadyInUse(EntitiesAlreadyInUseException e, HttpServletRequest request){
+
+        HttpStatus status = HttpStatus.CONFLICT;
+        StandardError err = new StandardError();
+        err.setTimestamp(LocalDateTime.now());
+        err.setStatus(status.value());
+        err.setError("Conflict");
+        err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
 }

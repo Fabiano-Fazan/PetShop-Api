@@ -31,7 +31,8 @@ public class ProductService {
                 .map(productMapper::toResponseDto);
     }
 
-    public Page<ProductResponseDto> getProductByCategory(ProductCategory productCategory, Pageable pageable) {
+    public Page<ProductResponseDto> getProductByCategory(UUID categoryId, Pageable pageable) {
+        ProductCategory productCategory = validatorEntities.validateProductCategory(categoryId);
         return productRepository.findByCategory(productCategory, pageable)
                 .map(productMapper::toResponseDto);
     }
@@ -58,6 +59,7 @@ public class ProductService {
     public ProductResponseDto updateProduct(UUID id, UpdateProductDto updateProductDTO) {
         Product product = validatorEntities.validateProduct(id);
         productMapper.updateProductFromDTO(updateProductDTO, product);
+        product.setCategory(validatorEntities.validateProductCategory(updateProductDTO.getCategoryId()));
         return productMapper.toResponseDto(productRepository.save(product));
     }
 

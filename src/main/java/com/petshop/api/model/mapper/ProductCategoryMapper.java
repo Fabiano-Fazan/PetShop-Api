@@ -12,10 +12,8 @@ public interface ProductCategoryMapper {
     @Mapping(target = "id", ignore = true)
     ProductCategory toEntity(CreateProductCategoryDto createProductCategoryDTO);
 
-
     ProductCategoryResponseDto toResponseDto(ProductCategory productCategory);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
     void updateProductCategoryFromDTO(UpdateProductCategoryDto updateProductCategoryDTO, @MappingTarget ProductCategory productCategory);
 }

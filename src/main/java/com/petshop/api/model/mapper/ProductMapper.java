@@ -12,7 +12,6 @@ public interface ProductMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "quantityInStock", defaultValue= "0")
-    @Mapping(target = "category", ignore = true)
     Product toEntity(CreateProductDto createProductDTO);
 
 
