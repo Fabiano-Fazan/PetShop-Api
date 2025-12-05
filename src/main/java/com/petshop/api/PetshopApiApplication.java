@@ -10,3 +10,4 @@ public class PetshopApiApplication {
 		SpringApplication.run(PetshopApiApplication.class, args);
 	}
 }
+

@@ -4,7 +4,7 @@ import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.Sale;
-import com.petshop.api.model.enums.PaymentType;
+import com.petshop.api.model.enums.SalePaymentType;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -21,16 +21,18 @@ public class FinancialInstallmentGenerator {
             Integer qtyInstallments,
             Integer intervalDays,
             LocalDate today
+
     ){
 
-        if (sale.getPaymentType() == PaymentType.CASH) {
+        if (sale.getPaymentType() == SalePaymentType.CASH) {
             return List.of(buildFinancial(
                     sale.getClient(),
                     sale,
                     "Sale %s".formatted(sale.getId()),
                     1, 1, 0,
                     sale.getTotalValue(), BigDecimal.ZERO,
-                    today, true
+                    today, true,
+                    sale.getNotes()
             ));
         } else {
             return generateGenericInstallments(
@@ -41,7 +43,9 @@ public class FinancialInstallmentGenerator {
                     qtyInstallments,
                     intervalDays,
                     today,
-                    false
+                    false,
+                    sale.getNotes()
+
             );
         }
     }
@@ -60,7 +64,8 @@ public class FinancialInstallmentGenerator {
                 qtyInstallments,
                 intervalDays,
                 dto.getDueDate(),
-                dto.getIsPaid() != null ? dto.getIsPaid() : false
+                dto.getIsPaid() != null ? dto.getIsPaid() : false,
+                dto.getNotes()
         );
     }
 
@@ -72,7 +77,8 @@ public class FinancialInstallmentGenerator {
             Integer qtyInstallments,
             Integer intervalDays,
             LocalDate startDate,
-            Boolean isPaid
+            Boolean isPaid,
+            String notes
     ) {
         BigDecimal installments = BigDecimal.valueOf(qtyInstallments);
         BigDecimal installmentValue = totalValue.divide(installments, 2, RoundingMode.FLOOR);
@@ -89,7 +95,8 @@ public class FinancialInstallmentGenerator {
                         installmentValue,
                         reminder,
                         startDate,
-                        isPaid
+                        isPaid,
+                        notes
                 ))
                 .toList();
     }
@@ -104,7 +111,8 @@ public class FinancialInstallmentGenerator {
             BigDecimal installmentValue,
             BigDecimal reminder,
             LocalDate startDate,
-            Boolean isPaid
+            Boolean isPaid,
+            String notes
     ){
 
         String finalDescription = totalInstallments > 1
@@ -126,6 +134,7 @@ public class FinancialInstallmentGenerator {
                 .isPaid(isPaid)
                 .paymentDate(isPaid ? startDate : null)
                 .installment(installmentNumber)
+                .notes(notes)
                 .build();
     }
 }

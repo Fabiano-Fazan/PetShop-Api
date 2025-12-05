@@ -4,6 +4,7 @@ import com.petshop.api.domain.financial.FinancialInstallmentGenerator;
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
+import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
@@ -29,7 +30,6 @@ public class FinancialService {
     private final FinancialMapper financialMapper;
     private final FinancialInstallmentGenerator installmentGenerator;
     private final ValidatorEntities validatorEntities;
-
 
 
     public FinancialResponseDto getFinancialById(UUID id) {
@@ -76,10 +76,22 @@ public class FinancialService {
     }
 
     @Transactional
+    public FinancialResponseDto markAsPaidFinancial(UUID id, String paymentDescription){
+        Financial financial = validatorEntities.validateFinancial(id);
+        if (Boolean.TRUE.equals(financial.getIsPaid())){
+            throw new BusinessException("This bill is already marked as paid, making a payment impossible.");
+        }
+        financial.setIsPaid(true);
+        financial.setPaymentDate(LocalDate.now());
+        financial.setDescription(paymentDescription);
+        return financialMapper.toResponseDto(financialRepository.save(financial));
+    }
+
+    @Transactional
     public FinancialResponseDto refundFinancial(UUID id, String refundDescription){
         Financial financial = validatorEntities.validateFinancial(id);
         if (Boolean.FALSE.equals(financial.getIsPaid())){
-            throw new IllegalStateException("This bill is not marked as paid, making a refund impossible.");
+            throw new BusinessException("This bill is not marked as paid, making a refund impossible.");
         }
         financial.setIsPaid(false);
         financial.setPaymentDate(null);

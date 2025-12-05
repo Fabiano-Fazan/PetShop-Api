@@ -28,7 +28,5 @@ public class CreateProductDto {
 
     private UUID categoryId;
 
-    @NotNull(message = "The quantity in stock cannot be null")
-    @Positive(message = "The quantity in stock needs to be positive")
     private Integer quantityInStock;
 }

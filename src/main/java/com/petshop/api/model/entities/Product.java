@@ -28,12 +28,18 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(name = "quantity_in_stock", nullable = false)
-    @Builder.Default
+    @Column(name = "quantity_in_stock")
     private Integer quantityInStock = 0;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory category;
+
+    @PrePersist
+    public void quantityDefault(){
+        if (quantityInStock == null) {
+            quantityInStock = 0;
+        }
+    }
 
 }

@@ -14,5 +14,6 @@ public interface FinancialMapper {
 
     @Mapping(target = "clientId", source = "client.id")
     @Mapping(target = "saleId", source = "sale.id")
+    @Mapping(target = "monetaryType", source = "monetaryType.name")
     FinancialResponseDto toResponseDto(Financial financial);
 }

@@ -22,6 +22,8 @@ public class FinancialResponseDto {
     private Integer installment;
     private Boolean isPaid;
     private UUID clientId;
+    private String name;
     private UUID saleId;
+    private String monetaryType;
     private String notes;
 }

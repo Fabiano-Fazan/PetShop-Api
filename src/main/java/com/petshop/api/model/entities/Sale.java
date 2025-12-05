@@ -1,6 +1,6 @@
 package com.petshop.api.model.entities;
 
-import com.petshop.api.model.enums.PaymentType;
+import com.petshop.api.model.enums.SalePaymentType;
 import com.petshop.api.model.enums.SaleStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,7 +29,7 @@ public class Sale {
 
     @Column(name = "payment_type")
     @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
+    private SalePaymentType paymentType;
 
     @Column(name = "total_value", precision = 10, scale = 2)
     private BigDecimal totalValue;
@@ -37,6 +37,8 @@ public class Sale {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SaleStatus status;
+
+    private String notes;
 
     @OneToMany(mappedBy = "sale", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

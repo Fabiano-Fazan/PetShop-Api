@@ -64,7 +64,7 @@ public class ProductCategoryService {
             }
         if (productRepository.existsByCategoryId(id)){
             throw new BusinessException("Cannot delete this category because it is being used by products");
-        }
+           }
         productCategoryRepository.deleteById(id);
     }
 }

@@ -32,7 +32,7 @@ public class FinancialController {
         return ResponseEntity.ok(financial);
     }
 
-    @GetMapping("/client")
+    @GetMapping("/name")
     public ResponseEntity<Page<FinancialResponseDto>> getByClientName(@RequestParam String name, Pageable pageable){
         Page<FinancialResponseDto> financials = financialService.getByClientNameContainingIgnoreCase(name, pageable);
         return ResponseEntity.ok(financials);
@@ -42,6 +42,12 @@ public class FinancialController {
     public ResponseEntity<List<FinancialResponseDto>> createFinancial(@RequestBody @Valid CreateFinancialDto createFinancialDto){
         List<FinancialResponseDto> financials = financialService.createManualFinancial(createFinancialDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(financials);
+    }
+
+    @PatchMapping("/{id}/payment")
+    public ResponseEntity<FinancialResponseDto> markAsPaid(@PathVariable UUID id, @RequestParam String paymentDescription){
+        FinancialResponseDto paidFinancial = financialService.markAsPaidFinancial(id, paymentDescription);
+        return ResponseEntity.ok(paidFinancial);
     }
 
     @PatchMapping("/{id}/refund")

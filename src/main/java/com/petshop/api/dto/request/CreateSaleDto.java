@@ -1,6 +1,6 @@
 package com.petshop.api.dto.request;
 
-import com.petshop.api.model.enums.PaymentType;
+import com.petshop.api.model.enums.SalePaymentType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,6 +30,8 @@ public class CreateSaleDto {
     private Integer intervalDays;
 
     @NotNull(message = "Payment type is required")
-    private PaymentType paymentType;
+    private SalePaymentType paymentType;
+
+    private String notes;
 
 }

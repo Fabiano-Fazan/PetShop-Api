@@ -20,6 +20,8 @@ public class ValidatorEntities {
     private final VeterinarianRepository veterinarianRepository;
     private final FinancialRepository financialRepository;
     private final VeterinarianCategoryRepository veterinarianCategoryRepository;
+    private final MonetaryTypeRepository monetaryTypeRepository;
+
 
     public Client validateClient (UUID id){
         return clientRepository.findById(id)
@@ -64,5 +66,10 @@ public class ValidatorEntities {
     public Financial validateFinancial (UUID id){
         return financialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Financial not found with ID: " + id));
+    }
+
+    public MonetaryType validateMonetaryType (UUID id){
+        return monetaryTypeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Monetary type not found with ID: " + id));
     }
 }
