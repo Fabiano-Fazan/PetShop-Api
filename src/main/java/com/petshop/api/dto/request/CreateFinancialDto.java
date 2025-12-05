@@ -29,15 +29,14 @@ public class CreateFinancialDto {
     private LocalDate paymentDate;
 
     @NotNull(message = "The installment cannot be null")
-    private Integer installment;
+    private Integer installments;
+
+    private Integer intervalDays;
 
     private Boolean isPaid;
 
     @NotNull(message = "Client ID is required")
     private UUID clientId;
-
-    @NotNull(message = "Sale ID is required")
-    private UUID saleId;
 
     private String notes;
 

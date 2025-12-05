@@ -3,6 +3,7 @@ package com.petshop.api.controller;
 import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.service.FinancialService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,9 +39,9 @@ public class FinancialController {
     }
 
     @PostMapping
-    public ResponseEntity<FinancialResponseDto> createFinancial(@RequestBody CreateFinancialDto createFinancialDTO){
-        FinancialResponseDto createdFinancial = financialService.createManualFinancial(createFinancialDTO);
-        return new ResponseEntity<>(createdFinancial, HttpStatus.CREATED);
+    public ResponseEntity<List<FinancialResponseDto>> createFinancial(@RequestBody @Valid CreateFinancialDto createFinancialDto){
+        List<FinancialResponseDto> financials = financialService.createManualFinancial(createFinancialDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(financials);
     }
 
     @PatchMapping("/{id}/refund")

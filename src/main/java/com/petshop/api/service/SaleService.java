@@ -1,11 +1,11 @@
 package com.petshop.api.service;
 
 
+import com.petshop.api.domain.sale.SaleCancel;
 import com.petshop.api.domain.sale.SaleGenerator;
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateSaleDto;
 import com.petshop.api.dto.response.SaleResponseDto;
-import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.*;
 import com.petshop.api.model.enums.SaleStatus;
@@ -30,6 +30,7 @@ public class SaleService {
     private final FinancialService financialService;
     private final SaleGenerator saleGenerator;
     private final ValidatorEntities validatorEntities;
+    private final SaleCancel saleCancel;
 
 
     public Page<SaleResponseDto> getSaleByClientNameContainingIgnoreCase(String name, Pageable pageable){
@@ -73,23 +74,15 @@ public class SaleService {
     @Transactional
     public SaleResponseDto cancelSale(UUID id) {
         Sale sale = validatorEntities.validateSale(id);
-        if (sale.getStatus() == SaleStatus.CANCELED) {
-            throw new BusinessException("This sale is already canceled");
-        }
-
-        boolean hasPaidInstallments = sale.getFinancial().stream()
-                .anyMatch(Financial::getIsPaid);
-
-        if (hasPaidInstallments) {
-            throw new BusinessException("It is not possible to cancel a sale that has already been paid in installments.");
-        }
-
-        sale.setStatus(SaleStatus.CANCELED);
-
+        saleCancel.cancel(sale);
+        returnItemsToStock(sale);
         Sale canceledSale = saleRepository.save(sale);
+        return saleMapper.toResponseDto(canceledSale);
+    }
 
-        for (ProductSale productSold : canceledSale.getProductSales()) {
-            String description = "CANCELLATION_OF_SALE_ORDER_" + canceledSale.getId();
+    private void returnItemsToStock(Sale sale){
+        sale.getProductSales().forEach(productSold -> {
+            String description = "CANCELLATION_OF_SALE_ORDER_" + sale.getId();
 
             stockMovementService.registerInput(
                     productSold.getProduct(),
@@ -99,13 +92,9 @@ public class SaleService {
                     productSold.getUnitPrice(),
                     sale
             );
-        }
-
-        for (Financial financialCreated : canceledSale.getFinancial()){
-            financialService.deleteFinancial(financialCreated.getId());
-        }
-        return saleMapper.toResponseDto(canceledSale);
+        });
     }
 }
+
 
 

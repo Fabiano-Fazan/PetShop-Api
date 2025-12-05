@@ -5,6 +5,7 @@ import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.exception.ResourceNotFoundException;
+import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.mapper.FinancialMapper;
@@ -30,6 +31,7 @@ public class FinancialService {
     private final ValidatorEntities validatorEntities;
 
 
+
     public FinancialResponseDto getFinancialById(UUID id) {
         return financialRepository.findById(id)
                 .map(financialMapper::toResponseDto)
@@ -49,7 +51,7 @@ public class FinancialService {
     @Transactional
     public void createFinancialFromSale(Sale sale, Integer qtyInstallments, Integer intervalDays){
         LocalDate today = LocalDate.now();
-        List<Financial> installments = installmentGenerator.generateInstallments(
+        List<Financial> installments = installmentGenerator.generateInstallmentsFromSale(
                 sale,
                 qtyInstallments,
                 intervalDays,
@@ -59,11 +61,18 @@ public class FinancialService {
     }
 
     @Transactional
-    public FinancialResponseDto createManualFinancial(CreateFinancialDto createFinancialDTO){
-        Financial financial = financialMapper.toEntity(createFinancialDTO);
-        financial.setSale(validatorEntities.validateSale(createFinancialDTO.getSaleId()));
-        financial.setClient(validatorEntities.validateClient(createFinancialDTO.getClientId()));
-        return financialMapper.toResponseDto(financialRepository.save(financial));
+    public List<FinancialResponseDto> createManualFinancial(CreateFinancialDto createFinancialDto){
+        Client client = validatorEntities.validateClient(createFinancialDto.getClientId());
+        List<Financial> financials = installmentGenerator.generateInstallmentsFromDto(
+                client,
+                createFinancialDto,
+                createFinancialDto.getInstallments(),
+                createFinancialDto.getIntervalDays()
+        );
+        List<Financial> savedFinancials = financialRepository.saveAll(financials);
+        return savedFinancials.stream()
+                .map(financialMapper::toResponseDto)
+                .toList();
     }
 
     @Transactional
