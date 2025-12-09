@@ -34,7 +34,7 @@ public class VeterinarianController {
 
     @GetMapping("/name")
     public ResponseEntity<Page<VeterinarianResponseDto>> getVeterinarianByName(@RequestParam String name, Pageable pageable){
-        Page<VeterinarianResponseDto> veterinarianByName = veterinarianService.getVeterinarianByNameContainingIgnoreCase(name,pageable);
+        Page<VeterinarianResponseDto> veterinarianByName = veterinarianService.getVeterinarianByName(name,pageable);
         return ResponseEntity.ok(veterinarianByName);
     }
 

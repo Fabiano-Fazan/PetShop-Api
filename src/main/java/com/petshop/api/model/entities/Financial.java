@@ -41,19 +41,19 @@ public class Financial {
     @Column(nullable = false)
     private Integer installment;
 
+    private String notes;
+
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "monetary_type_id", nullable = false)
+    @JoinColumn(name = "monetary_type_id")
     private MonetaryType monetaryType;
 
     @ManyToOne
     @JoinColumn(name = "sale_id")
     private Sale sale;
-
-    private String notes;
 
     @PrePersist
     public void createdFinancialAt() {

@@ -38,7 +38,7 @@ public class VeterinarianCategoryService {
                 .map(veterinarianCategoryMapper::toResponseDto);
     }
 
-    public VeterinarianCategoryResponseDto getByName(String name) {
+    public VeterinarianCategoryResponseDto getVeterinarianCategoryByName(String name) {
         return veterinarianCategoryRepository.findByNameContainingIgnoreCase(name)
                 .map(veterinarianCategoryMapper::toResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian category not found with name: " + name));

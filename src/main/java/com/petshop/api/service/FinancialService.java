@@ -43,7 +43,7 @@ public class FinancialService {
                 .map(financialMapper::toResponseDto);
     }
 
-    public Page<FinancialResponseDto> getByClientNameContainingIgnoreCase(String name, Pageable pageable) {
+    public Page<FinancialResponseDto> getByClientName(String name, Pageable pageable) {
         return financialRepository.findByClientNameContainingIgnoreCase(name, pageable)
                 .map(financialMapper::toResponseDto);
     }

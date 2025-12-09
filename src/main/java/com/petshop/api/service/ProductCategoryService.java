@@ -38,7 +38,7 @@ public class ProductCategoryService {
                 .map(productCategoryMapper::toResponseDto);
     }
 
-    public ProductCategoryResponseDto getByName(String name){
+    public ProductCategoryResponseDto getProductCategoryByName(String name){
         return productCategoryRepository.findByNameContainingIgnoreCase(name)
                 .map(productCategoryMapper::toResponseDto)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found with name: " + name));

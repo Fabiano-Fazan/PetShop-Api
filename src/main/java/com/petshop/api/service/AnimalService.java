@@ -36,12 +36,12 @@ public class AnimalService {
                 .orElseThrow(() -> new ResourceNotFoundException("Animal not found with id: " + id));
     }
 
-    public Page<AnimalResponseDto> getAnimalsBySpeciesContainingIgnoreCase(String species, Pageable pageable){
+    public Page<AnimalResponseDto> getAnimalsBySpecies(String species, Pageable pageable){
         return animalRepository.findBySpeciesContainingIgnoreCase(species, pageable)
                 .map(animalMapper::toResponseDto);
     }
 
-    public Page<AnimalResponseDto> getAnimalByNameContainingIgnoreCase(String name, Pageable pageable){
+    public Page<AnimalResponseDto> getAnimalByName(String name, Pageable pageable){
         return animalRepository.findAllByNameContainingIgnoreCase(name, pageable)
                 .map(animalMapper::toResponseDto);
     }

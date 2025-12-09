@@ -33,7 +33,7 @@ public class SaleService {
     private final SaleCancel saleCancel;
 
 
-    public Page<SaleResponseDto> getSaleByClientNameContainingIgnoreCase(String name, Pageable pageable){
+    public Page<SaleResponseDto> getSaleByClientName(String name, Pageable pageable){
         return saleRepository.findByClientNameContainingIgnoreCase(name,pageable)
                 .map(saleMapper::toResponseDto);
     }
@@ -80,6 +80,7 @@ public class SaleService {
         return saleMapper.toResponseDto(canceledSale);
     }
 
+    @Transactional
     private void returnItemsToStock(Sale sale){
         sale.getProductSales().forEach(productSold -> {
             String description = "CANCELLATION_OF_SALE_ORDER_" + sale.getId();

@@ -34,7 +34,7 @@ public class ProductCategoryController {
 
     @GetMapping("/name")
     public ResponseEntity<ProductCategoryResponseDto> getByName(@RequestParam String name){
-        ProductCategoryResponseDto productCategoryByName = productCategoryService.getByName(name);
+        ProductCategoryResponseDto productCategoryByName = productCategoryService.getProductCategoryByName(name);
         return ResponseEntity.ok(productCategoryByName);
     }
 

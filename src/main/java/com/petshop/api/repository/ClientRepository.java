@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ClientRepository extends JpaRepository<Client, UUID> {
+
     Page<Client> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 
     boolean existsByCpf(String cpf);

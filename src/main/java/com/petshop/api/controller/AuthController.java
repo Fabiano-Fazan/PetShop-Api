@@ -1,8 +1,8 @@
 package com.petshop.api.controller;
 
 import com.petshop.api.dto.response.AuthResponseDto;
-import com.petshop.api.dto.request.LoginDto;
-import com.petshop.api.dto.request.RegisterDto;
+import com.petshop.api.dto.request.CreateLoginDto;
+import com.petshop.api.dto.request.CreateRegisterDto;
 import com.petshop.api.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +18,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> register(@RequestBody RegisterDto registerDTO){return ResponseEntity.ok(authService.register(registerDTO));}
+    public ResponseEntity<AuthResponseDto> register(@RequestBody CreateRegisterDto createRegisterDTO){return ResponseEntity.ok(authService.register(createRegisterDTO));}
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@RequestBody LoginDto loginDTO){return ResponseEntity.ok(authService.login(loginDTO));}
+    public ResponseEntity<AuthResponseDto> login(@RequestBody CreateLoginDto createLoginDTO){return ResponseEntity.ok(authService.login(createLoginDTO));}
 
 
 

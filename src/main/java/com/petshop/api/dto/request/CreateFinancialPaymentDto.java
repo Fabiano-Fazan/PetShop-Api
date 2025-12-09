@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class FinancialPaymentDto {
+public class CreateFinancialPaymentDto {
 
 
 

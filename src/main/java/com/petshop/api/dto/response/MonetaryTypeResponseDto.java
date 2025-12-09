@@ -12,4 +12,5 @@ import lombok.Setter;
 public class MonetaryTypeResponseDto {
     private String id;
     private String name;
+    private String description;
 }

@@ -40,7 +40,7 @@ public class ClientService {
                 .orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + id));
     }
 
-    public Page<ClientResponseDto> getClientByNameContainingIgnoreCase(String name, Pageable pageable) {
+    public Page<ClientResponseDto> getClientByName(String name, Pageable pageable) {
         return clientRepository.findAllByNameContainingIgnoreCase(name,pageable)
                 .map(clientMapper::toResponseDto);
     }

@@ -35,7 +35,7 @@ public class VeterinarianService {
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found with ID: " + id));
     }
 
-    public Page<VeterinarianResponseDto> getVeterinarianByNameContainingIgnoreCase(String name, Pageable pageable){
+    public Page<VeterinarianResponseDto> getVeterinarianByName(String name, Pageable pageable){
         return veterinarianRepository.findAllByNameContainingIgnoreCase(name,pageable)
                 .map(veterinarianMapper::toResponseDto);
     }

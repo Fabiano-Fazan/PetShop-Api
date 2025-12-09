@@ -1,8 +1,8 @@
 package com.petshop.api.service;
 
 import com.petshop.api.dto.response.AuthResponseDto;
-import com.petshop.api.dto.request.LoginDto;
-import com.petshop.api.dto.request.RegisterDto;
+import com.petshop.api.dto.request.CreateLoginDto;
+import com.petshop.api.dto.request.CreateRegisterDto;
 import com.petshop.api.model.entities.User;
 import com.petshop.api.repository.UserRepository;
 import com.petshop.api.security.JwtService;
@@ -23,11 +23,11 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     @Transactional
-    public AuthResponseDto register(RegisterDto registerDTO) {
+    public AuthResponseDto register(CreateRegisterDto createRegisterDTO) {
         var user = new User();
-        user.setEmail(registerDTO.getEmail());
-        user.setName(registerDTO.getName());
-        user.setPassword(passwordEncoder.encode(registerDTO.getPassword()));
+        user.setEmail(createRegisterDTO.getEmail());
+        user.setName(createRegisterDTO.getName());
+        user.setPassword(passwordEncoder.encode(createRegisterDTO.getPassword()));
 
         User savedUser = userRepository.save(user);
 
@@ -39,7 +39,7 @@ public class AuthService {
                 .build();
     }
 
-    public AuthResponseDto login(LoginDto request){
+    public AuthResponseDto login(CreateLoginDto request){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),

@@ -1,6 +1,5 @@
 package com.petshop.api.service;
 
-import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateMonetaryType;
 import com.petshop.api.dto.response.MonetaryTypeResponseDto;
 import com.petshop.api.exception.BusinessException;
@@ -22,7 +21,6 @@ import java.util.UUID;
 public class MonetaryTypeService {
     private final MonetaryTypeRepository monetaryTypeRepository;
     private final MonetaryTypeMapper monetaryTypeMapper;
-    private final ValidatorEntities validatorEntities;
     private final FinancialRepository financialRepository;
 
 
@@ -37,7 +35,7 @@ public class MonetaryTypeService {
                 .map(monetaryTypeMapper::toResponseDto);
     }
 
-    public Page<MonetaryTypeResponseDto> getByNameContainingIgnoreCase(String name, Pageable pageable){
+    public Page<MonetaryTypeResponseDto> getMonetaryTypeByName(String name, Pageable pageable){
         return monetaryTypeRepository.findByNameContainingIgnoreCase(name, pageable)
                 .map(monetaryTypeMapper::toResponseDto);
     }

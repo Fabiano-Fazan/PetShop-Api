@@ -35,7 +35,7 @@ public class VeterinarianCategoryController {
 
     @GetMapping("/name")
     public ResponseEntity<VeterinarianCategoryResponseDto> getByName(@RequestParam String name) {
-        VeterinarianCategoryResponseDto veterinarianCategoryByName = veterinarianCategoryService.getByName(name);
+        VeterinarianCategoryResponseDto veterinarianCategoryByName = veterinarianCategoryService.getVeterinarianCategoryByName(name);
         return ResponseEntity.ok(veterinarianCategoryByName);
     }
 
