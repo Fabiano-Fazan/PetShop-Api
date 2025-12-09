@@ -41,7 +41,7 @@ public class ClientService {
     }
 
     public Page<ClientResponseDto> getClientByName(String name, Pageable pageable) {
-        return clientRepository.findAllByNameContainingIgnoreCase(name,pageable)
+        return clientRepository.findByNameContainingIgnoreCase(name,pageable)
                 .map(clientMapper::toResponseDto);
     }
 

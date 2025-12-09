@@ -13,6 +13,7 @@ public interface FinancialMapper {
     Financial toEntity(CreateFinancialDto createFinancialDto);
 
     @Mapping(target = "clientId", source = "client.id")
+    @Mapping(target = "name", source = "client.name")
     @Mapping(target = "saleId", source = "sale.id")
     @Mapping(target = "monetaryType", source = "monetaryType.name")
     FinancialResponseDto toResponseDto(Financial financial);

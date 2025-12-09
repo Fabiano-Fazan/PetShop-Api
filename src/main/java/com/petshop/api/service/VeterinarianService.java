@@ -36,7 +36,7 @@ public class VeterinarianService {
     }
 
     public Page<VeterinarianResponseDto> getVeterinarianByName(String name, Pageable pageable){
-        return veterinarianRepository.findAllByNameContainingIgnoreCase(name,pageable)
+        return veterinarianRepository.findByNameContainingIgnoreCase(name,pageable)
                 .map(veterinarianMapper::toResponseDto);
     }
 

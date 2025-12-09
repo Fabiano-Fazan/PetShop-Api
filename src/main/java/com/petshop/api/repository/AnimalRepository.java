@@ -8,7 +8,7 @@ import java.util.UUID;
 
 public interface AnimalRepository extends JpaRepository<Animal, UUID> {
     Page<Animal> findBySpeciesContainingIgnoreCase(String species, Pageable pageable);
-    Page<Animal> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Animal> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
 
 

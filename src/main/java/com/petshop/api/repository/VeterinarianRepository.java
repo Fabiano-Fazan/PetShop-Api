@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, UUID> {
-    Page<Veterinarian> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Veterinarian> findByNameContainingIgnoreCase(String name, Pageable pageable);
 }
