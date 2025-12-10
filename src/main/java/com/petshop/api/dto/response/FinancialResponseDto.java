@@ -15,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class FinancialResponseDto {
 
+    private UUID id;
     private String description;
     private BigDecimal amount;
     private LocalDate dueDate;
