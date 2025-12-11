@@ -1,6 +1,7 @@
 package com.petshop.api.controller;
 
 import com.petshop.api.dto.request.CreateFinancialDto;
+import com.petshop.api.dto.request.CreateFinancialPaymentDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.service.FinancialService;
 import jakarta.validation.Valid;
@@ -45,8 +46,8 @@ public class FinancialController {
     }
 
     @PatchMapping("/{id}/payment")
-    public ResponseEntity<FinancialResponseDto> markAsPaid(@PathVariable UUID id, @RequestParam String paymentDescription){
-        FinancialResponseDto paidFinancial = financialService.markAsPaidFinancial(id, paymentDescription);
+    public ResponseEntity<FinancialResponseDto> markAsPaid(@PathVariable UUID id, @RequestBody CreateFinancialPaymentDto createFinancialPaymentDto){
+        FinancialResponseDto paidFinancial = financialService.payFinancial(id, createFinancialPaymentDto);
         return ResponseEntity.ok(paidFinancial);
     }
 

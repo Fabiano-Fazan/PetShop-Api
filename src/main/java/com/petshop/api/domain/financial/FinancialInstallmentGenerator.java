@@ -3,18 +3,24 @@ package com.petshop.api.domain.financial;
 import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
+import com.petshop.api.model.entities.FinancialPayment;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.enums.SalePaymentType;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 @Component
+@RequiredArgsConstructor
 public class FinancialInstallmentGenerator {
+
+    private final FinancialPaymentGenerator paymentGenerator;
 
     public List<Financial> generateInstallmentsFromSale(
             Sale sale,
@@ -113,7 +119,7 @@ public class FinancialInstallmentGenerator {
             LocalDate startDate,
             Boolean isPaid,
             String notes
-    ){
+    ) {
 
         String finalDescription = totalInstallments > 1
                 ? "%s - Installment %d/%d".formatted(descriptionBase, installmentNumber, totalInstallments)
@@ -123,18 +129,37 @@ public class FinancialInstallmentGenerator {
                 ? installmentValue.add(reminder)
                 : installmentValue;
 
+        if (startDate == null) {
+            startDate = LocalDate.now();
+        }
         LocalDate dueDate = startDate.plusDays((long) intervalDays * installmentNumber);
 
-        return Financial.builder()
+        Financial financial = Financial.builder()
                 .client(client)
                 .sale(sale)
                 .description(finalDescription)
                 .amount(finalAmount)
+                .balance(finalAmount)
                 .dueDate(dueDate)
-                .isPaid(isPaid)
-                .paymentDate(isPaid ? startDate : null)
+                .isPaid(false)
+                .paymentDate(null)
                 .installment(installmentNumber)
                 .notes(notes)
+                .financialPayments(new ArrayList<>())
                 .build();
+
+        if (Boolean.TRUE.equals(isPaid)) {
+            String method = (sale != null && sale.getPaymentType() != null)
+                    ? sale.getPaymentType().name()
+                    : "Paid";
+            FinancialPayment payment = FinancialPayment.builder()
+                    .paidAmount(finalAmount)
+                    .paymentDate(LocalDate.now())
+                    .method(method)
+                    .notes("Auto-generated payment")
+                    .build();
+            paymentGenerator.addPayment(financial, payment);
+        }
+        return financial;
     }
 }

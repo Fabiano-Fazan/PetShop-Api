@@ -4,11 +4,13 @@ import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateProductDto;
 import com.petshop.api.dto.request.UpdateProductDto;
 import com.petshop.api.dto.response.ProductResponseDto;
+import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Product;
 import com.petshop.api.model.entities.ProductCategory;
 import com.petshop.api.model.mapper.ProductMapper;
 import com.petshop.api.repository.ProductRepository;
+import com.petshop.api.repository.ProductSaleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final ValidatorEntities validatorEntities;
+    private final ProductSaleRepository productSaleRepository;
 
 
     public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
@@ -68,6 +71,9 @@ public class ProductService {
         if (!productRepository.existsById(id)) {
             throw new ResourceNotFoundException("Product not found with ID: " + id);
             }
+        if (productSaleRepository.existsByProductId(id)){
+            throw new BusinessException("Cannot delete this product because it is being used in sales");
+           }
         productRepository.deleteById(id);
     }
 }

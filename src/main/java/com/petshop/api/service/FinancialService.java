@@ -1,13 +1,16 @@
 package com.petshop.api.service;
 
 import com.petshop.api.domain.financial.FinancialInstallmentGenerator;
+import com.petshop.api.domain.financial.FinancialPaymentGenerator;
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateFinancialDto;
+import com.petshop.api.dto.request.CreateFinancialPaymentDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
+import com.petshop.api.model.entities.FinancialPayment;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.mapper.FinancialMapper;
 import com.petshop.api.repository.FinancialRepository;
@@ -30,6 +33,7 @@ public class FinancialService {
     private final FinancialMapper financialMapper;
     private final FinancialInstallmentGenerator installmentGenerator;
     private final ValidatorEntities validatorEntities;
+    private final FinancialPaymentGenerator paymentGenerator;
 
 
     public FinancialResponseDto getFinancialById(UUID id) {
@@ -76,14 +80,17 @@ public class FinancialService {
     }
 
     @Transactional
-    public FinancialResponseDto markAsPaidFinancial(UUID id, String paymentDescription){
+    public FinancialResponseDto payFinancial(UUID id, CreateFinancialPaymentDto paymentDto){
         Financial financial = validatorEntities.validateFinancial(id);
-        if (Boolean.TRUE.equals(financial.getIsPaid())){
-            throw new BusinessException("This bill is already marked as paid, making a payment impossible.");
+        if(paymentDto.getPaidAmount().compareTo(financial.getBalance()) > 0){
+            throw new BusinessException("The paid amount cannot be greater than the financial amount.");
         }
-        financial.setIsPaid(true);
-        financial.setPaymentDate(LocalDate.now());
-        financial.setDescription(paymentDescription);
+        FinancialPayment financialPayment = financialMapper.toPaymentEntity(paymentDto);
+        financialPayment.setMonetaryType(validatorEntities.validateMonetaryType(paymentDto.getMonetaryTypeId()));
+        paymentGenerator.addPayment(financial, financialPayment);
+        if(!financial.getIsPaid()&& paymentDto.getNextDueDate() != null){
+            financial.setDueDate(paymentDto.getNextDueDate());
+        }
         return financialMapper.toResponseDto(financialRepository.save(financial));
     }
 

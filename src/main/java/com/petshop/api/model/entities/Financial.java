@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -26,10 +28,13 @@ public class Financial {
     @Column(nullable = false)
     private BigDecimal amount;
 
+    @Column(nullable = false)
+    private BigDecimal balance;
+
     @Column(name = "date_created", nullable = false)
     private LocalDate dateCreated;
 
-    @Column(name = "due_date",nullable = false)
+    @Column(name = "due_date")
     private LocalDate dueDate;
 
     @Column(name = "payment_date")
@@ -48,18 +53,20 @@ public class Financial {
     private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "monetary_type_id")
+    @JoinColumn(name = "monetary_type")
     private MonetaryType monetaryType;
 
     @ManyToOne
     @JoinColumn(name = "sale_id")
     private Sale sale;
 
+    @OneToMany(mappedBy = "financial", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<FinancialPayment> financialPayments = new ArrayList<>();
+
     @PrePersist
     public void createdFinancialAt() {
-        if (dateCreated == null) {
-            dateCreated = LocalDate.now();
+        if (dateCreated == null) dateCreated = LocalDate.now();
+        if (balance == null) balance = amount;
         }
-    }
-
 }
