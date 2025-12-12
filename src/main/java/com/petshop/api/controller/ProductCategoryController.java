@@ -33,9 +33,9 @@ public class ProductCategoryController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<ProductCategoryResponseDto> getByName(@RequestParam String name){
-        ProductCategoryResponseDto productCategoryByName = productCategoryService.getProductCategoryByName(name);
-        return ResponseEntity.ok(productCategoryByName);
+    public ResponseEntity<Page<ProductCategoryResponseDto>> getProductCategoriesByName(@RequestParam String name, Pageable pageable) {
+        Page<ProductCategoryResponseDto> productCategoriesByName = productCategoryService.getProductCategoryByNameContainingIgnoreCase(name, pageable);
+        return ResponseEntity.ok(productCategoriesByName);
     }
 
     @PostMapping

@@ -28,9 +28,10 @@ public class Veterinarian {
     private String phone;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private VeterinarianCategory category;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
 }

@@ -23,4 +23,6 @@ public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppoi
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    boolean existsByVeterinarianId(UUID veterinarianId);
 }

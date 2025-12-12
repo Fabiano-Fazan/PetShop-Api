@@ -2,13 +2,11 @@ package com.petshop.api.controller;
 
 import com.petshop.api.dto.request.CreateStockMovementDto;
 import com.petshop.api.service.StockMovementService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,15 +15,15 @@ public class StockMovementController {
 
     private final StockMovementService stockMovementService;
 
-    @PostMapping("/input")
-    public ResponseEntity<Void> giveInputStock(@Valid @RequestBody  CreateStockMovementDto createStockMovementDTO){
-        stockMovementService.registerInput(createStockMovementDTO);
+    @PostMapping("/input/{id}")
+    public ResponseEntity<Void> giveInputStock(@PathVariable UUID id, @RequestBody  CreateStockMovementDto createStockMovementDTO){
+        stockMovementService.registerInput(id, createStockMovementDTO);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/output")
-    public ResponseEntity<Void> giveOutputStock(@Valid @RequestBody  CreateStockMovementDto createStockMovementDTO){
-        stockMovementService.registerOutput(createStockMovementDTO);
+    @PostMapping("/output/{id}")
+    public ResponseEntity<Void> giveOutputStock(@PathVariable UUID id,@RequestBody  CreateStockMovementDto createStockMovementDTO){
+        stockMovementService.registerOutput(id, createStockMovementDTO);
         return ResponseEntity.ok().build();
     }
 }

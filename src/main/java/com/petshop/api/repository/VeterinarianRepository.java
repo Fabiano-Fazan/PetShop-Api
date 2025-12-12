@@ -9,4 +9,6 @@ import java.util.UUID;
 
 public interface VeterinarianRepository extends JpaRepository<Veterinarian, UUID> {
     Page<Veterinarian> findByNameContainingIgnoreCase(String name, Pageable pageable);
+
+    boolean existsByCategoryId(UUID categoryId);
 }

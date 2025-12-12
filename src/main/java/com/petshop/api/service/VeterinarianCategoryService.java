@@ -6,10 +6,12 @@ import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateVeterinarianCategoryDto;
 import com.petshop.api.dto.request.UpdateVeterinarianCategoryDto;
 import com.petshop.api.dto.response.VeterinarianCategoryResponseDto;
+import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.VeterinarianCategory;
 import com.petshop.api.model.mapper.VeterinarianCategoryMapper;
 import com.petshop.api.repository.VeterinarianCategoryRepository;
+import com.petshop.api.repository.VeterinarianRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ public class VeterinarianCategoryService {
     private final VeterinarianCategoryMapper veterinarianCategoryMapper;
     private final VeterinarianCategoryRepository veterinarianCategoryRepository;
     private final ValidatorEntities validatorEntities;
+    private final VeterinarianRepository veterinarianRepository;
 
 
     public VeterinarianCategoryResponseDto getVeterinarianCategoryById(UUID id) {
@@ -38,10 +41,9 @@ public class VeterinarianCategoryService {
                 .map(veterinarianCategoryMapper::toResponseDto);
     }
 
-    public VeterinarianCategoryResponseDto getVeterinarianCategoryByName(String name) {
-        return veterinarianCategoryRepository.findByNameContainingIgnoreCase(name)
-                .map(veterinarianCategoryMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian category not found with name: " + name));
+    public Page<VeterinarianCategoryResponseDto> getVeterinarianCategoryByNameContainingIgnoreCase(String name, Pageable pageable) {
+        return veterinarianCategoryRepository.findByNameContainingIgnoreCase(name, pageable)
+                .map(veterinarianCategoryMapper::toResponseDto);
     }
 
     @Transactional
@@ -61,6 +63,9 @@ public class VeterinarianCategoryService {
     public void deleteVeterinarianCategory(UUID id){
         if (!veterinarianCategoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Veterinarian category not found with ID: " + id);
+        }
+        if (veterinarianRepository.existsByCategoryId(id)) {
+            throw new BusinessException("Cannot delete this veterinarian category because it is being used by veterinarians");
         }
         veterinarianCategoryRepository.deleteById(id);
     }

@@ -12,5 +12,4 @@ public interface FinancialRepository extends JpaRepository<Financial, UUID> {
 
     Page<Financial> findByClientNameContainingIgnoreCase(String name, Pageable pageable);
 
-    boolean existsByMonetaryTypeId(UUID monetaryTypeId);
 }

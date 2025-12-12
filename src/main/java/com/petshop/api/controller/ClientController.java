@@ -33,8 +33,8 @@ public class ClientController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<Page<ClientResponseDto>> getClientByNameContainingIgnoreCase(@RequestParam String name, Pageable pageable) {
-        Page<ClientResponseDto> clientByName = clientService.getClientByName(name,pageable);
+    public ResponseEntity<Page<ClientResponseDto>> getClientByName(@RequestParam String name, Pageable pageable) {
+        Page<ClientResponseDto> clientByName = clientService.getClientByNameContainingIgnoreCase(name,pageable);
         return ResponseEntity.ok(clientByName);
     }
 

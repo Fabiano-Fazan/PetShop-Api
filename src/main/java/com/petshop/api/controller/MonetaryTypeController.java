@@ -32,8 +32,8 @@ public class MonetaryTypeController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<Page<MonetaryTypeResponseDto>> getByNameContainingIgnoreCase(@RequestParam String name, Pageable pageable){
-        Page<MonetaryTypeResponseDto> monetaryTypeByName = monetaryTypeService.getMonetaryTypeByName(name, pageable);
+    public ResponseEntity<Page<MonetaryTypeResponseDto>> getByName(@RequestParam String name, Pageable pageable){
+        Page<MonetaryTypeResponseDto> monetaryTypeByName = monetaryTypeService.getMonetaryTypeByNameContainingIgnoreCase(name, pageable);
         return ResponseEntity.ok(monetaryTypeByName);
     }
 

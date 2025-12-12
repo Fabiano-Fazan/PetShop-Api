@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 
 @Service
@@ -44,9 +45,9 @@ public class StockMovementService {
     }
 
     @Transactional
-    public void registerInput(CreateStockMovementDto createStockMovementDTO){
-        Product product = productRepository.findWithLockById(createStockMovementDTO.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + createStockMovementDTO.getProductId()));
+    public void registerInput(UUID id, CreateStockMovementDto createStockMovementDTO){
+        Product product = productRepository.findWithLockById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
         this.registerInput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(), createStockMovementDTO.getInvoice(), createStockMovementDTO.getPrice(), null);
     }
 
@@ -54,7 +55,7 @@ public class StockMovementService {
     public void registerOutput(Product product, Integer quantity, String description, BigDecimal price, Sale sale){
         Product productDb = validatorEntities.validateProduct(product.getId());
         if(productDb.getQuantityInStock() < quantity){
-            throw new InsufficientStockException("Not enough stock for product %s. Requested: %s Available: %s"
+            throw new InsufficientStockException("Not enough stock for product %s. Requested: %s, Available: %s"
                     .formatted(productDb.getName(), quantity, productDb.getQuantityInStock()));
         }
         productDb.setQuantityInStock(product.getQuantityInStock() - quantity);
@@ -72,9 +73,9 @@ public class StockMovementService {
     }
 
     @Transactional
-    public void registerOutput(CreateStockMovementDto createStockMovementDTO){
-        Product product = productRepository.findWithLockById(createStockMovementDTO.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + createStockMovementDTO.getProductId()));
+    public void registerOutput( UUID id, CreateStockMovementDto createStockMovementDTO){
+        Product product = productRepository.findWithLockById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
         this.registerOutput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(),createStockMovementDTO.getPrice(), null);
     }
 

@@ -149,14 +149,10 @@ public class FinancialInstallmentGenerator {
                 .build();
 
         if (Boolean.TRUE.equals(isPaid)) {
-            String method = (sale != null && sale.getPaymentType() != null)
-                    ? sale.getPaymentType().name()
-                    : "Paid";
             FinancialPayment payment = FinancialPayment.builder()
                     .paidAmount(finalAmount)
                     .paymentDate(LocalDate.now())
-                    .method(method)
-                    .notes("Auto-generated payment")
+                    .notes("Paid with cash on creation")
                     .build();
             paymentGenerator.addPayment(financial, payment);
         }

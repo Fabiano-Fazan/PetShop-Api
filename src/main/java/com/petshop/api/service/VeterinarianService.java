@@ -4,9 +4,11 @@ import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateVeterinarianDto;
 import com.petshop.api.dto.request.UpdateVeterinarianDto;
 import com.petshop.api.dto.response.VeterinarianResponseDto;
+import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Veterinarian;
 import com.petshop.api.model.mapper.VeterinarianMapper;
+import com.petshop.api.repository.MedicalAppointmentRepository;
 import com.petshop.api.repository.VeterinarianRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ public class VeterinarianService {
     private final VeterinarianRepository veterinarianRepository;
     private final VeterinarianMapper veterinarianMapper;
     private final ValidatorEntities validatorEntities;
+    private final MedicalAppointmentRepository medicalAppointmentRepository;
 
 
     public Page<VeterinarianResponseDto> getAllVeterinarians(Pageable pageable){
@@ -35,7 +38,7 @@ public class VeterinarianService {
                 .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found with ID: " + id));
     }
 
-    public Page<VeterinarianResponseDto> getVeterinarianByName(String name, Pageable pageable){
+    public Page<VeterinarianResponseDto> getVeterinarianByNameContainingIgnoreCase(String name, Pageable pageable){
         return veterinarianRepository.findByNameContainingIgnoreCase(name,pageable)
                 .map(veterinarianMapper::toResponseDto);
     }
@@ -58,6 +61,9 @@ public class VeterinarianService {
     public void deleteVeterinarian(UUID id){
         if(!veterinarianRepository.existsById(id)){
             throw new ResourceNotFoundException("Veterinarian not found with ID: " + id);
+        }
+        if(medicalAppointmentRepository.existsByVeterinarianId(id)){
+            throw new BusinessException("Cannot delete veterinarian with scheduled medical appointments.");
         }
         veterinarianRepository.deleteById(id);
     }

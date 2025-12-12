@@ -33,7 +33,7 @@ public class SaleController {
 
     @GetMapping("/name")
     public ResponseEntity<Page<SaleResponseDto>> getByClientName(@RequestParam String name, Pageable pageable){
-        Page<SaleResponseDto> sales = saleService.getSaleByClientName(name, pageable);
+        Page<SaleResponseDto> sales = saleService.getSaleByClientNameContainingIgnoreCase(name, pageable);
         return ResponseEntity.ok(sales);
     }
 

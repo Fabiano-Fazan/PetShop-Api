@@ -6,7 +6,7 @@ import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.MonetaryType;
 import com.petshop.api.model.mapper.MonetaryTypeMapper;
-import com.petshop.api.repository.FinancialRepository;
+import com.petshop.api.repository.FinancialPaymentRepository;
 import com.petshop.api.repository.MonetaryTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ import java.util.UUID;
 public class MonetaryTypeService {
     private final MonetaryTypeRepository monetaryTypeRepository;
     private final MonetaryTypeMapper monetaryTypeMapper;
-    private final FinancialRepository financialRepository;
+    private final FinancialPaymentRepository financialPaymentRepository;
 
 
     public MonetaryTypeResponseDto getMonetaryTypeById(UUID id){
@@ -35,7 +35,7 @@ public class MonetaryTypeService {
                 .map(monetaryTypeMapper::toResponseDto);
     }
 
-    public Page<MonetaryTypeResponseDto> getMonetaryTypeByName(String name, Pageable pageable){
+    public Page<MonetaryTypeResponseDto> getMonetaryTypeByNameContainingIgnoreCase(String name, Pageable pageable){
         return monetaryTypeRepository.findByNameContainingIgnoreCase(name, pageable)
                 .map(monetaryTypeMapper::toResponseDto);
     }
@@ -51,7 +51,7 @@ public class MonetaryTypeService {
         if (!monetaryTypeRepository.existsById(id)){
             throw new ResourceNotFoundException("Monetary type not found with id: " + id);
              }
-        if (financialRepository.existsByMonetaryTypeId(id)){
+        if (financialPaymentRepository.existsByMonetaryTypeId(id)){
             throw new BusinessException("Cannot delete this monetary type because it is being used by financial");
              }
         monetaryTypeRepository.deleteById(id);

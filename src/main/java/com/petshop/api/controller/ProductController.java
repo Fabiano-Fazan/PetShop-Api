@@ -3,7 +3,6 @@ package com.petshop.api.controller;
 import com.petshop.api.dto.request.CreateProductDto;
 import com.petshop.api.dto.request.UpdateProductDto;
 import com.petshop.api.dto.response.ProductResponseDto;
-import com.petshop.api.model.entities.ProductCategory;
 import com.petshop.api.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +41,7 @@ public class ProductController {
 
     @GetMapping("/name")
     public ResponseEntity<Page<ProductResponseDto>> getProductByName(@RequestParam String name, Pageable pageable) {
-        Page<ProductResponseDto> productsByName = productService.getProductByName(name,pageable);
+        Page<ProductResponseDto> productsByName = productService.getProductByNameContainingIgnoreCase(name,pageable);
         return ResponseEntity.ok(productsByName);
     }
 

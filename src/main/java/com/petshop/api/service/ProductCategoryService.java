@@ -38,10 +38,9 @@ public class ProductCategoryService {
                 .map(productCategoryMapper::toResponseDto);
     }
 
-    public ProductCategoryResponseDto getProductCategoryByName(String name){
-        return productCategoryRepository.findByNameContainingIgnoreCase(name)
-                .map(productCategoryMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with name: " + name));
+    public Page<ProductCategoryResponseDto> getProductCategoryByNameContainingIgnoreCase(String name, Pageable pageable) {
+        return productCategoryRepository.findByNameContainingIgnoreCase(name, pageable)
+                .map(productCategoryMapper::toResponseDto);
     }
 
     @Transactional

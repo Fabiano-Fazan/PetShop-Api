@@ -41,7 +41,7 @@ public class AnimalService {
                 .map(animalMapper::toResponseDto);
     }
 
-    public Page<AnimalResponseDto> getAnimalByName(String name, Pageable pageable){
+    public Page<AnimalResponseDto> getAnimalByNameContainingIgnoreCase(String name, Pageable pageable){
         return animalRepository.findByNameContainingIgnoreCase(name, pageable)
                 .map(animalMapper::toResponseDto);
     }

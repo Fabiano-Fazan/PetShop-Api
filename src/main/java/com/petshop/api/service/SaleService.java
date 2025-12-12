@@ -33,7 +33,7 @@ public class SaleService {
     private final SaleCancel saleCancel;
 
 
-    public Page<SaleResponseDto> getSaleByClientName(String name, Pageable pageable){
+    public Page<SaleResponseDto> getSaleByClientNameContainingIgnoreCase(String name, Pageable pageable){
         return saleRepository.findByClientNameContainingIgnoreCase(name,pageable)
                 .map(saleMapper::toResponseDto);
     }
@@ -55,6 +55,7 @@ public class SaleService {
         newSale.setClient(validatorEntities.validateClient(createSaleDTO.getClientId()));
         newSale.setStatus(SaleStatus.COMPLETED);
         newSale.setPaymentType(createSaleDTO.getPaymentType());
+        newSale.setNotes(createSaleDTO.getNotes());
         createSaleDTO.getProductSales().forEach(item -> {
             ProductSale productSale = saleGenerator.generateProductSale(item, newSale);
             newSale.getProductSales().add(productSale);

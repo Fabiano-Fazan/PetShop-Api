@@ -34,8 +34,8 @@ public class VeterinarianCategoryController {
     }
 
     @GetMapping("/name")
-    public ResponseEntity<VeterinarianCategoryResponseDto> getByName(@RequestParam String name) {
-        VeterinarianCategoryResponseDto veterinarianCategoryByName = veterinarianCategoryService.getVeterinarianCategoryByName(name);
+    public ResponseEntity<Page<VeterinarianCategoryResponseDto>> getByName(@RequestParam String name, Pageable pageable) {
+        Page<VeterinarianCategoryResponseDto> veterinarianCategoryByName = veterinarianCategoryService.getVeterinarianCategoryByNameContainingIgnoreCase(name, pageable);
         return ResponseEntity.ok(veterinarianCategoryByName);
     }
 

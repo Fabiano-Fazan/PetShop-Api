@@ -28,8 +28,6 @@ public class FinancialPayment {
 
     private String notes;
 
-    private String method;
-
     @ManyToOne
     @JoinColumn(name = "monetary_type")
     private MonetaryType monetaryType;

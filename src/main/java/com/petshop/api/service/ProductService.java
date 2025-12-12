@@ -40,7 +40,7 @@ public class ProductService {
                 .map(productMapper::toResponseDto);
     }
 
-    public Page<ProductResponseDto> getProductByName(String name, Pageable pageable){
+    public Page<ProductResponseDto> getProductByNameContainingIgnoreCase(String name, Pageable pageable){
         return productRepository.findByNameContainingIgnoreCase(name, pageable)
                 .map(productMapper::toResponseDto);
     }

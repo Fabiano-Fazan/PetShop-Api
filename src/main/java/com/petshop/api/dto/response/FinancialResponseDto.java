@@ -25,6 +25,5 @@ public class FinancialResponseDto {
     private UUID clientId;
     private String name;
     private UUID saleId;
-    private String monetaryType;
     private String notes;
 }

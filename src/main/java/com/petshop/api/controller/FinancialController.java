@@ -35,7 +35,7 @@ public class FinancialController {
 
     @GetMapping("/name")
     public ResponseEntity<Page<FinancialResponseDto>> getByClientName(@RequestParam String name, Pageable pageable){
-        Page<FinancialResponseDto> financials = financialService.getByClientName(name, pageable);
+        Page<FinancialResponseDto> financials = financialService.getByClientNameContainingIgnoreCase(name, pageable);
         return ResponseEntity.ok(financials);
     }
 
@@ -45,15 +45,15 @@ public class FinancialController {
         return ResponseEntity.status(HttpStatus.CREATED).body(financials);
     }
 
-    @PatchMapping("/{id}/payment")
-    public ResponseEntity<FinancialResponseDto> markAsPaid(@PathVariable UUID id, @RequestBody CreateFinancialPaymentDto createFinancialPaymentDto){
+    @PatchMapping("/payment/{id}")
+    public ResponseEntity<FinancialResponseDto> payFinancial(@PathVariable UUID id, @RequestBody CreateFinancialPaymentDto createFinancialPaymentDto){
         FinancialResponseDto paidFinancial = financialService.payFinancial(id, createFinancialPaymentDto);
         return ResponseEntity.ok(paidFinancial);
     }
 
-    @PatchMapping("/{id}/refund")
-    public ResponseEntity<FinancialResponseDto> refundFinancial(@PathVariable UUID id, @RequestParam String refundDescription) {
-        FinancialResponseDto refundedFinancial = financialService.refundFinancial(id, refundDescription);
+    @DeleteMapping("/refund/{id}")
+    public ResponseEntity<FinancialResponseDto> refundFinancial(@PathVariable UUID id) {
+        FinancialResponseDto refundedFinancial = financialService.refundFinancial(id);
         return ResponseEntity.ok(refundedFinancial);
 
     }

@@ -42,7 +42,7 @@ public class AnimalController {
 
     @GetMapping("/name")
     public ResponseEntity<Page<AnimalResponseDto>> getAnimalsByName(@RequestParam String name, Pageable pageable) {
-        Page<AnimalResponseDto> animalsByName = animalService.getAnimalByName(name, pageable);
+        Page<AnimalResponseDto> animalsByName = animalService.getAnimalByNameContainingIgnoreCase(name, pageable);
         return ResponseEntity.ok(animalsByName);
     }
 

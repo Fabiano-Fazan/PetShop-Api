@@ -13,6 +13,7 @@ import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.FinancialPayment;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.mapper.FinancialMapper;
+import com.petshop.api.repository.FinancialPaymentRepository;
 import com.petshop.api.repository.FinancialRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,7 @@ public class FinancialService {
     private final FinancialInstallmentGenerator installmentGenerator;
     private final ValidatorEntities validatorEntities;
     private final FinancialPaymentGenerator paymentGenerator;
+    private final FinancialPaymentRepository financialPaymentRepository;
 
 
     public FinancialResponseDto getFinancialById(UUID id) {
@@ -47,7 +49,7 @@ public class FinancialService {
                 .map(financialMapper::toResponseDto);
     }
 
-    public Page<FinancialResponseDto> getByClientName(String name, Pageable pageable) {
+    public Page<FinancialResponseDto> getByClientNameContainingIgnoreCase(String name, Pageable pageable) {
         return financialRepository.findByClientNameContainingIgnoreCase(name, pageable)
                 .map(financialMapper::toResponseDto);
     }
@@ -95,14 +97,11 @@ public class FinancialService {
     }
 
     @Transactional
-    public FinancialResponseDto refundFinancial(UUID id, String refundDescription){
-        Financial financial = validatorEntities.validateFinancial(id);
-        if (Boolean.FALSE.equals(financial.getIsPaid())){
-            throw new BusinessException("This bill is not marked as paid, making a refund impossible.");
-        }
-        financial.setIsPaid(false);
-        financial.setPaymentDate(null);
-        financial.setDescription(refundDescription);
+    public FinancialResponseDto refundFinancial(UUID id){
+        FinancialPayment financialPayment = validatorEntities.validateFinancialPayment(id);
+        Financial financial = financialPayment.getFinancial();
+        paymentGenerator.revertPayment(financial, financialPayment);
+        financialPaymentRepository.delete(financialPayment);
         return financialMapper.toResponseDto(financialRepository.save(financial));
     }
 

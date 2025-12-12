@@ -53,10 +53,6 @@ public class Financial {
     private Client client;
 
     @ManyToOne
-    @JoinColumn(name = "monetary_type")
-    private MonetaryType monetaryType;
-
-    @ManyToOne
     @JoinColumn(name = "sale_id")
     private Sale sale;
 

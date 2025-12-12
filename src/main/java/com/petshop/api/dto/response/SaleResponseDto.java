@@ -18,5 +18,6 @@ public class SaleResponseDto {
     private String clientName;
     private LocalDateTime saleDate;
     private BigDecimal totalValue;
+    private String notes;
     private List<ProductSaleResponseDto> productSales;
 }
