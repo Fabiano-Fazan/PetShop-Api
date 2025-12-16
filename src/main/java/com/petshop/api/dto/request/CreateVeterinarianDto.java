@@ -27,7 +27,7 @@ public class CreateVeterinarianDto {
     private String phone;
 
     @NotNull(message = "Veterinarian Category is required")
-    private UUID categoryid;
+    private UUID categoryId;
 
     @NotBlank(message = "Email is required")
     @Email(message = "Email format is invalid")

@@ -46,7 +46,7 @@ public class SaleService {
     public SaleResponseDto getSaleById(UUID id) {
         return saleRepository.findById(id)
                 .map(saleMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
     }
 
     @Transactional

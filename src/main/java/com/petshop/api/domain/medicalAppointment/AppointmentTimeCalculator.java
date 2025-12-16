@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Component
 public class AppointmentTimeCalculator {
 
-    private static final int DEFAULT_DURATION_MINUTES = 30;
+    private static final int defaultDurationMinutes = 30;
 
     public int duration(Integer inputDuration,int defaultDuration){
         return inputDuration != null ? inputDuration : defaultDuration;
@@ -18,7 +18,7 @@ public class AppointmentTimeCalculator {
     }
 
     public LocalDateTime end(LocalDateTime start, Integer durationMinutes){
-        int duration = durationMinutes != null ? durationMinutes : DEFAULT_DURATION_MINUTES;
+        int duration = durationMinutes != null ? durationMinutes : defaultDurationMinutes;
         return start.plusMinutes(duration);
     }
 }

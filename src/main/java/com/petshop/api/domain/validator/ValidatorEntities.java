@@ -26,56 +26,56 @@ public class ValidatorEntities {
 
     public Client validateClient (UUID id){
         return clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
     }
 
     public Animal validateAnimal (UUID id){
         return animalRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Animal not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Animal not found"));
     }
 
     public Product validateProduct (UUID id){
         return productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     public ProductCategory validateProductCategory (UUID id){
         return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     public Sale validateSale (UUID id){
         return saleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Sale not found"));
     }
 
     public MedicalAppointment validateMedicalAppointment (UUID id){
         return medicalAppointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Medical appointment not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Medical appointment not found"));
     }
 
     public Veterinarian validateVeterinarian (UUID id){
         return veterinarianRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found"));
     }
 
     public VeterinarianCategory validateVeterinarianCategory (UUID id){
         return veterinarianCategoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian category not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian category not found"));
     }
 
     public Financial validateFinancial (UUID id){
         return financialRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Financial not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Financial not found"));
     }
 
     public FinancialPayment validateFinancialPayment (UUID id){
         return financialPaymentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Financial payment not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Financial payment not found"));
     }
 
     public MonetaryType validateMonetaryType (UUID id){
         return monetaryTypeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Monetary type not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Monetary type not found"));
     }
 }

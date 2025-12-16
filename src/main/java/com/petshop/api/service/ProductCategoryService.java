@@ -30,7 +30,7 @@ public class ProductCategoryService {
     public ProductCategoryResponseDto getProductCategoryById(UUID id){
         return productCategoryRepository.findById(id)
                 .map(productCategoryMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
     }
 
     public Page<ProductCategoryResponseDto> getAllProductCategories(Pageable pageable) {
@@ -59,7 +59,7 @@ public class ProductCategoryService {
     @Transactional
     public void deleteProductCategory(UUID id) {
         if (!productCategoryRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Category not found with ID: " + id);
+            throw new ResourceNotFoundException("Category not found");
             }
         if (productRepository.existsByCategoryId(id)){
             throw new BusinessException("Cannot delete this category because it is being used by products");

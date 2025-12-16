@@ -27,7 +27,7 @@ public class MonetaryTypeService {
     public MonetaryTypeResponseDto getMonetaryTypeById(UUID id){
         return monetaryTypeRepository.findById(id)
                 .map(monetaryTypeMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Monetary type not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Monetary type not found"));
     }
 
     public Page<MonetaryTypeResponseDto> getAllMonetaryTypes(Pageable pageable) {
@@ -49,7 +49,7 @@ public class MonetaryTypeService {
     @Transactional
     public void deleteMonetaryType(UUID id){
         if (!monetaryTypeRepository.existsById(id)){
-            throw new ResourceNotFoundException("Monetary type not found with id: " + id);
+            throw new ResourceNotFoundException("Monetary type not found");
              }
         if (financialPaymentRepository.existsByMonetaryTypeId(id)){
             throw new BusinessException("Cannot delete this monetary type because it is being used by financial");

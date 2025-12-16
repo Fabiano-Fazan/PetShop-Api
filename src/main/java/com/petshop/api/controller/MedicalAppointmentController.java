@@ -32,6 +32,18 @@ public class MedicalAppointmentController {
         return  ResponseEntity.ok(medicalAppointmentById);
     }
 
+    @GetMapping("/veterinarian")
+    public ResponseEntity<Page<MedicalAppointmentResponseDto>> getMedicalAppointmentsByVeterinarianName(@RequestParam String name, Pageable pageable){
+        Page<MedicalAppointmentResponseDto> medicalAppointments = medicalAppointmentService.getMedicalAppointmentsByVeterinarianNameContainingIgnoreCase(name, pageable);
+        return ResponseEntity.ok(medicalAppointments);
+    }
+
+    @GetMapping("/client")
+    public ResponseEntity<Page<MedicalAppointmentResponseDto>> getMedicalAppointmentsByClientName(@RequestParam String name, Pageable pageable){
+        Page<MedicalAppointmentResponseDto> medicalAppointments = medicalAppointmentService.getMedicalAppointmentsByClientNameContainingIgnoreCase(name, pageable);
+        return ResponseEntity.ok(medicalAppointments);
+    }
+
     @PostMapping
     public ResponseEntity<MedicalAppointmentResponseDto> createMedicalAppointment(@Valid @RequestBody CreateMedicalAppointmentDto createMedicalAppointmentDto){
         MedicalAppointmentResponseDto createdMedicalAppointment = medicalAppointmentService.createMedicalAppointment(createMedicalAppointmentDto);

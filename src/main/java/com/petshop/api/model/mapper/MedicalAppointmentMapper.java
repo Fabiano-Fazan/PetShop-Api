@@ -1,7 +1,6 @@
 package com.petshop.api.model.mapper;
 
 import com.petshop.api.dto.request.CreateMedicalAppointmentDto;
-import com.petshop.api.dto.request.UpdateMedicalAppointmentDto;
 import com.petshop.api.dto.response.MedicalAppointmentResponseDto;
 import com.petshop.api.model.entities.MedicalAppointment;
 import org.mapstruct.*;
@@ -11,9 +10,8 @@ public interface MedicalAppointmentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "appointmentEndTime", ignore = true)
-    @Mapping(target = "status", constant = "SCHEDULED")
     @Mapping(target = "client", ignore = true)
-    @Mapping(target = "animal", ignore = true)
+    @Mapping(target = "appointmentStatus", ignore = true)
     @Mapping(target = "veterinarian", ignore = true)
     MedicalAppointment toEntity(CreateMedicalAppointmentDto createMedicalAppointmentDTO);
 

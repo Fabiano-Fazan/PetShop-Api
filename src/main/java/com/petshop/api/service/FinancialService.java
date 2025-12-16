@@ -41,7 +41,7 @@ public class FinancialService {
     public FinancialResponseDto getFinancialById(UUID id) {
         return financialRepository.findById(id)
                 .map(financialMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Financial not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Financial not found"));
     }
 
     public Page<FinancialResponseDto> getAllFinancial(Pageable pageable){
@@ -108,7 +108,7 @@ public class FinancialService {
     @Transactional
     public void deleteFinancial(UUID id){
         if(!financialRepository.existsById(id)){
-            throw new ResourceNotFoundException("Financial not found with ID: " + id);
+            throw new ResourceNotFoundException("Financial not found");
         }
         financialRepository.deleteById(id);
     }

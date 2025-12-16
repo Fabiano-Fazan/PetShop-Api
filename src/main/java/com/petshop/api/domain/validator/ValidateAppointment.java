@@ -17,7 +17,7 @@ public class ValidateAppointment {
     public void validateAppointmentTimeConflict(UUID veterinarianId, LocalDateTime startTime, LocalDateTime endTime) {
         boolean hasConflict = medicalAppointmentRepository.existsConflictingAppointment(veterinarianId, startTime, endTime);
         if (hasConflict) {
-            throw new AppointmentDateTimeAlreadyExistsException("This time slot is already booked for the veterinarian ID: " + veterinarianId);
+            throw new AppointmentDateTimeAlreadyExistsException("This time slot is already booked for this veterinarian");
         }
     }
 

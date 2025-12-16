@@ -33,7 +33,7 @@ public class VeterinarianCategoryService {
     public VeterinarianCategoryResponseDto getVeterinarianCategoryById(UUID id) {
         return veterinarianCategoryRepository.findById(id)
                 .map(veterinarianCategoryMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian category not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian category not found"));
     }
 
     public Page<VeterinarianCategoryResponseDto> getAllVeterinarianCategories(Pageable pageable) {
@@ -62,7 +62,7 @@ public class VeterinarianCategoryService {
     @Transactional
     public void deleteVeterinarianCategory(UUID id){
         if (!veterinarianCategoryRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Veterinarian category not found with ID: " + id);
+            throw new ResourceNotFoundException("Veterinarian category not found");
         }
         if (veterinarianRepository.existsByCategoryId(id)) {
             throw new BusinessException("Cannot delete this veterinarian category because it is being used by veterinarians");

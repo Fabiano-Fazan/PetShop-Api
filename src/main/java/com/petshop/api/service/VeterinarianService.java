@@ -35,7 +35,7 @@ public class VeterinarianService {
     public VeterinarianResponseDto getVeterinarianById(UUID id){
         return veterinarianRepository.findById(id)
                 .map(veterinarianMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found"));
     }
 
     public Page<VeterinarianResponseDto> getVeterinarianByNameContainingIgnoreCase(String name, Pageable pageable){
@@ -46,7 +46,7 @@ public class VeterinarianService {
     @Transactional
     public VeterinarianResponseDto createVeterinarian(CreateVeterinarianDto createVeterinarianDTO){
         Veterinarian veterinarian = veterinarianMapper.toEntity(createVeterinarianDTO);
-        veterinarian.setCategory(validatorEntities.validateVeterinarianCategory(createVeterinarianDTO.getCategoryid()));
+        veterinarian.setCategory(validatorEntities.validateVeterinarianCategory(createVeterinarianDTO.getCategoryId()));
         return veterinarianMapper.toResponseDto(veterinarianRepository.save(veterinarian));
     }
 
@@ -60,7 +60,7 @@ public class VeterinarianService {
     @Transactional
     public void deleteVeterinarian(UUID id){
         if(!veterinarianRepository.existsById(id)){
-            throw new ResourceNotFoundException("Veterinarian not found with ID: " + id);
+            throw new ResourceNotFoundException("Veterinarian not found");
         }
         if(medicalAppointmentRepository.existsByVeterinarianId(id)){
             throw new BusinessException("Cannot delete veterinarian with scheduled medical appointments.");

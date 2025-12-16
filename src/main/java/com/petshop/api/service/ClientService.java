@@ -37,7 +37,7 @@ public class ClientService {
     public ClientResponseDto getClientById(UUID id) {
         return clientRepository.findById(id)
                 .map(clientMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
     }
 
     public Page<ClientResponseDto> getClientByNameContainingIgnoreCase(String name, Pageable pageable) {
@@ -65,7 +65,7 @@ public class ClientService {
     @Transactional
     public void deleteClient(UUID id) {
         if (!clientRepository.existsById(id)){
-            throw new ResourceNotFoundException("Client not found with ID: " + id);
+            throw new ResourceNotFoundException("Client not found");
         }
         clientRepository.deleteById(id);
     }

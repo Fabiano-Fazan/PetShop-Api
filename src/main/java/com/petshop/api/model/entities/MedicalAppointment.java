@@ -24,7 +24,7 @@ public class MedicalAppointment {
     @Column(nullable = false)
     private String diagnosis;
 
-    @Column(nullable = false)
+
     private String treatment;
 
     @ManyToOne
@@ -39,10 +39,6 @@ public class MedicalAppointment {
     @JoinColumn(name = "veterinarian_id", nullable = false)
     private Veterinarian veterinarian;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AppointmentStatus  appointmentStatus;
-
     @Column(nullable = false)
     private LocalDateTime appointmentStartTime;
 
@@ -51,7 +47,7 @@ public class MedicalAppointment {
     private Integer durationMinutes;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AppointmentStatus status;
+    @Column(name = "appointment_status",nullable = false)
+    private AppointmentStatus appointmentStatus;
 
 }

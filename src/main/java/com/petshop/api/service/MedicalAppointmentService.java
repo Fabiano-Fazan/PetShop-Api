@@ -38,9 +38,18 @@ public class MedicalAppointmentService {
     }
 
     public MedicalAppointmentResponseDto getMedicalAppointmentById(UUID id) {
-        MedicalAppointment medicalAppointmentById = medicalAppointmentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Medical appointment not found with ID: " + id));
+        MedicalAppointment medicalAppointmentById = validatorEntities.validateMedicalAppointment(id);
         return medicalAppointmentMapper.toResponseDto(medicalAppointmentById);
+    }
+
+    public Page<MedicalAppointmentResponseDto> getMedicalAppointmentsByVeterinarianNameContainingIgnoreCase(String name, Pageable pageable){
+        return medicalAppointmentRepository.findByVeterinarianNameContainingIgnoreCase(name, pageable)
+                .map(medicalAppointmentMapper::toResponseDto);
+    }
+
+    public Page<MedicalAppointmentResponseDto> getMedicalAppointmentsByClientNameContainingIgnoreCase(String name, Pageable pageable){
+        return medicalAppointmentRepository.findByClientNameContainingIgnoreCase(name, pageable)
+                .map(medicalAppointmentMapper::toResponseDto);
     }
 
     @Transactional
@@ -53,7 +62,7 @@ public class MedicalAppointmentService {
         appointment.setClient(validatorEntities.validateClient(createMedicalAppointmentDTO.getClientId()));
         appointment.setAnimal(validatorEntities.validateAnimal(createMedicalAppointmentDTO.getAnimalId()));
         appointment.setVeterinarian(validatorEntities.validateVeterinarian(createMedicalAppointmentDTO.getVeterinarianId()));
-        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        appointment.setAppointmentStatus(AppointmentStatus.SCHEDULED);
         return medicalAppointmentMapper.toResponseDto(medicalAppointmentRepository.save(appointment));
     }
 
@@ -67,7 +76,7 @@ public class MedicalAppointmentService {
     @Transactional
     public void deleteMedicalAppointment(UUID id){
         if (!medicalAppointmentRepository.existsById(id)){
-            throw new ResourceNotFoundException("Appointment not found with ID: " + id);
+            throw new ResourceNotFoundException("Appointment not found");
         }
         medicalAppointmentRepository.deleteById(id);
     }

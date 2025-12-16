@@ -33,7 +33,7 @@ public class AnimalService {
     public AnimalResponseDto getAnimalById(UUID id){
         return animalRepository.findById(id)
                 .map(animalMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Animal not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Animal not found"));
     }
 
     public Page<AnimalResponseDto> getAnimalsBySpecies(String species, Pageable pageable){
@@ -64,7 +64,7 @@ public class AnimalService {
     @Transactional
     public void deleteAnimal(UUID id){
         if(!animalRepository.existsById(id)){
-            throw new ResourceNotFoundException("Animal not found with ID: " + id);
+            throw new ResourceNotFoundException("Animal not found");
         }
         animalRepository.deleteById(id);
     }

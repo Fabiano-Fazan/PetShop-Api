@@ -1,6 +1,8 @@
 package com.petshop.api.repository;
 
 import com.petshop.api.model.entities.MedicalAppointment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,6 +25,11 @@ public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppoi
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end
     );
+
+    Page<MedicalAppointment> findByClientNameContainingIgnoreCase(String name, Pageable pageable);
+
+    Page<MedicalAppointment> findByVeterinarianNameContainingIgnoreCase(String name, Pageable pageable);
+
 
     boolean existsByVeterinarianId(UUID veterinarianId);
 }

@@ -47,7 +47,7 @@ public class StockMovementService {
     @Transactional
     public void registerInput(UUID id, CreateStockMovementDto createStockMovementDTO){
         Product product = productRepository.findWithLockById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         this.registerInput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(), createStockMovementDTO.getInvoice(), createStockMovementDTO.getPrice(), null);
     }
 
@@ -75,7 +75,7 @@ public class StockMovementService {
     @Transactional
     public void registerOutput( UUID id, CreateStockMovementDto createStockMovementDTO){
         Product product = productRepository.findWithLockById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         this.registerOutput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(),createStockMovementDTO.getPrice(), null);
     }
 

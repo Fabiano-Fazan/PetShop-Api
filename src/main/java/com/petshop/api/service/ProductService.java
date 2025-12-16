@@ -48,7 +48,7 @@ public class ProductService {
     public ProductResponseDto getProductById(UUID id) {
         return productRepository.findById(id)
                 .map(productMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class ProductService {
     @Transactional
     public void deleteProduct(UUID id) {
         if (!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Product not found with ID: " + id);
+            throw new ResourceNotFoundException("Product not found");
             }
         if (productSaleRepository.existsByProductId(id)){
             throw new BusinessException("Cannot delete this product because it is being used in sales");
