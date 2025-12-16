@@ -13,6 +13,7 @@ public interface MedicalAppointmentMapper {
     @Mapping(target = "client", ignore = true)
     @Mapping(target = "appointmentStatus", ignore = true)
     @Mapping(target = "veterinarian", ignore = true)
+    @Mapping(target = "notes", source = "notes")
     MedicalAppointment toEntity(CreateMedicalAppointmentDto createMedicalAppointmentDTO);
 
     @Mapping(target = "veterinarianName", source = "veterinarian.name")
@@ -22,6 +23,7 @@ public interface MedicalAppointmentMapper {
     @Mapping(target = "animalName", source = "animal.name")
     @Mapping(target = "animalId", source = "animal.id")
     @Mapping(target = "appointmentStatus", source = "appointmentStatus")
+    @Mapping(target = "notes", source = "notes")
     MedicalAppointmentResponseDto toResponseDto(MedicalAppointment medicalAppointment);
 }
 

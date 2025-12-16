@@ -7,6 +7,7 @@ import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateMedicalAppointmentDto;
 import com.petshop.api.dto.request.UpdateMedicalAppointmentDto;
 import com.petshop.api.dto.response.MedicalAppointmentResponseDto;
+import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.MedicalAppointment;
 import com.petshop.api.model.enums.AppointmentStatus;
@@ -77,6 +78,9 @@ public class MedicalAppointmentService {
     public void deleteMedicalAppointment(UUID id){
         if (!medicalAppointmentRepository.existsById(id)){
             throw new ResourceNotFoundException("Appointment not found");
+        }
+        if (!validatorEntities.validateMedicalAppointmentCanBeDeleted(id)){
+            throw new BusinessException("Only appointments with status SCHEDULED can be deleted");
         }
         medicalAppointmentRepository.deleteById(id);
     }

@@ -1,6 +1,7 @@
 package com.petshop.api.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.petshop.api.model.enums.AppointmentStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -23,10 +24,13 @@ public class UpdateMedicalAppointmentDto {
 
     private Integer durationMinutes;
 
+    private AppointmentStatus appointmentStatus;
+
     @Size(min = 5, max = 500, message = "The diagnosis must be between 10 and 500 characters")
     private String diagnosis;
 
     @Size(min = 5, max = 700, message = "The treatment must be between 10 and 700 characters")
     private String treatment;
 
+    private String notes;
 }

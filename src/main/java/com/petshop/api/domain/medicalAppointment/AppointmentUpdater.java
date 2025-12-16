@@ -40,12 +40,15 @@ public class AppointmentUpdater {
                     medicalAppointment.getDurationMinutes()
             );
 
+        if (updateMedicalAppointmentDto.getAppointmentStatus() != null) {
+            medicalAppointment.setAppointmentStatus(updateMedicalAppointmentDto.getAppointmentStatus());
+        }
             LocalDateTime end = timeCalculator.end(start, duration);
-
             medicalAppointment.setAppointmentStartTime(start);
             medicalAppointment.setAppointmentEndTime(end);
             medicalAppointment.setDurationMinutes(duration);
+            medicalAppointment.setNotes(updateMedicalAppointmentDto.getNotes());
+            medicalAppointment.setTreatment(updateMedicalAppointmentDto.getTreatment());
         }
-
     }
 }

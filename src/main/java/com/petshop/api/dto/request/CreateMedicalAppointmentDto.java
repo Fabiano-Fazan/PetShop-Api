@@ -32,5 +32,7 @@ public class CreateMedicalAppointmentDto {
     @Size(min = 5, max = 500, message = "The diagnosis must be between 5 and 500 characters")
     private String diagnosis;
 
+    private String notes;
+
 }
 

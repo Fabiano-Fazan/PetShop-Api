@@ -2,6 +2,7 @@ package com.petshop.api.domain.validator;
 
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.*;
+import com.petshop.api.model.enums.AppointmentStatus;
 import com.petshop.api.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -77,5 +78,10 @@ public class ValidatorEntities {
     public MonetaryType validateMonetaryType (UUID id){
         return monetaryTypeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Monetary type not found"));
+    }
+
+    public boolean validateMedicalAppointmentCanBeDeleted(UUID id) {
+        MedicalAppointment appointment = validateMedicalAppointment(id);
+        return appointment.getAppointmentStatus() == AppointmentStatus.SCHEDULED;
     }
 }
