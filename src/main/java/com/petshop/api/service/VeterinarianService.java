@@ -9,6 +9,7 @@ import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Veterinarian;
 import com.petshop.api.model.mapper.VeterinarianMapper;
 import com.petshop.api.repository.MedicalAppointmentRepository;
+import com.petshop.api.repository.VeterinarianCategoryRepository;
 import com.petshop.api.repository.VeterinarianRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,9 +23,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VeterinarianService {
     private final VeterinarianRepository veterinarianRepository;
+    private final MedicalAppointmentRepository medicalAppointmentRepository;
+    private final VeterinarianCategoryRepository veterinarianCategoryRepository;
     private final VeterinarianMapper veterinarianMapper;
     private final ValidatorEntities validatorEntities;
-    private final MedicalAppointmentRepository medicalAppointmentRepository;
+
 
 
     public Page<VeterinarianResponseDto> getAllVeterinarians(Pageable pageable){
@@ -33,9 +36,8 @@ public class VeterinarianService {
     }
 
     public VeterinarianResponseDto getVeterinarianById(UUID id){
-        return veterinarianRepository.findById(id)
-                .map(veterinarianMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian not found"));
+        Veterinarian veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
+        return veterinarianMapper.toResponseDto(veterinarian);
     }
 
     public Page<VeterinarianResponseDto> getVeterinarianByNameContainingIgnoreCase(String name, Pageable pageable){
@@ -44,16 +46,16 @@ public class VeterinarianService {
     }
 
     @Transactional
-    public VeterinarianResponseDto createVeterinarian(CreateVeterinarianDto createVeterinarianDTO){
-        Veterinarian veterinarian = veterinarianMapper.toEntity(createVeterinarianDTO);
-        veterinarian.setCategory(validatorEntities.validateVeterinarianCategory(createVeterinarianDTO.getCategoryId()));
+    public VeterinarianResponseDto createVeterinarian(CreateVeterinarianDto dto){
+        Veterinarian veterinarian = veterinarianMapper.toEntity(dto);
+        veterinarian.setCategory(validatorEntities.validate(dto.getCategoryId(), veterinarianCategoryRepository, "Veterinarian Category"));
         return veterinarianMapper.toResponseDto(veterinarianRepository.save(veterinarian));
     }
 
     @Transactional
-    public VeterinarianResponseDto updateVeterinarian(UUID id, UpdateVeterinarianDto updateVeterinarianDTO){
-        Veterinarian veterinarian = validatorEntities.validateVeterinarian(id);
-        veterinarianMapper.updateVeterinarianFromDTO(updateVeterinarianDTO, veterinarian);
+    public VeterinarianResponseDto updateVeterinarian(UUID id, UpdateVeterinarianDto updateDto){
+        Veterinarian veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
+        veterinarianMapper.updateVeterinarianFromDto(updateDto, veterinarian);
         return veterinarianMapper.toResponseDto(veterinarianRepository.save(veterinarian));
     }
 

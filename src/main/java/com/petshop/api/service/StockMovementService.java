@@ -28,7 +28,7 @@ public class StockMovementService {
 
     @Transactional
     public void registerInput(Product product, Integer quantity, String description, String invoice, BigDecimal price, Sale sale){
-        Product productDb = validatorEntities.validateProduct(product.getId());
+        Product productDb = validatorEntities.validate(product.getId(), productRepository, "Product");
         productDb.setQuantityInStock(product.getQuantityInStock() + quantity);
         productRepository.save(productDb);
 
@@ -45,15 +45,15 @@ public class StockMovementService {
     }
 
     @Transactional
-    public void registerInput(UUID id, CreateStockMovementDto createStockMovementDTO){
+    public void registerInput(UUID id, CreateStockMovementDto dto){
         Product product = productRepository.findWithLockById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        this.registerInput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(), createStockMovementDTO.getInvoice(), createStockMovementDTO.getPrice(), null);
+        this.registerInput(product, dto.getQuantity(), dto.getDescription(), dto.getInvoice(), dto.getPrice(), null);
     }
 
     @Transactional
     public void registerOutput(Product product, Integer quantity, String description, BigDecimal price, Sale sale){
-        Product productDb = validatorEntities.validateProduct(product.getId());
+        Product productDb = validatorEntities.validate(product.getId(), productRepository, "Product");
         if(productDb.getQuantityInStock() < quantity){
             throw new InsufficientStockException("Not enough stock for product %s. Requested: %s, Available: %s"
                     .formatted(productDb.getName(), quantity, productDb.getQuantityInStock()));
@@ -73,11 +73,9 @@ public class StockMovementService {
     }
 
     @Transactional
-    public void registerOutput( UUID id, CreateStockMovementDto createStockMovementDTO){
+    public void registerOutput( UUID id, CreateStockMovementDto dto){
         Product product = productRepository.findWithLockById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        this.registerOutput(product, createStockMovementDTO.getQuantity(), createStockMovementDTO.getDescription(),createStockMovementDTO.getPrice(), null);
+        this.registerOutput(product, dto.getQuantity(), dto.getDescription(), dto.getPrice(), null);
     }
-
-
 }

@@ -24,16 +24,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class VeterinarianCategoryService {
 
-    private final VeterinarianCategoryMapper veterinarianCategoryMapper;
     private final VeterinarianCategoryRepository veterinarianCategoryRepository;
-    private final ValidatorEntities validatorEntities;
     private final VeterinarianRepository veterinarianRepository;
+    private final VeterinarianCategoryMapper veterinarianCategoryMapper;
+    private final ValidatorEntities validatorEntities;
+
 
 
     public VeterinarianCategoryResponseDto getVeterinarianCategoryById(UUID id) {
-        return veterinarianCategoryRepository.findById(id)
-                .map(veterinarianCategoryMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Veterinarian category not found"));
+        VeterinarianCategory veterinarianCategory = validatorEntities.validate(id, veterinarianCategoryRepository, "Veterinarian Category");
+        return veterinarianCategoryMapper.toResponseDto(veterinarianCategory);
     }
 
     public Page<VeterinarianCategoryResponseDto> getAllVeterinarianCategories(Pageable pageable) {
@@ -47,15 +47,15 @@ public class VeterinarianCategoryService {
     }
 
     @Transactional
-    public VeterinarianCategoryResponseDto createVeterinarianCategory(CreateVeterinarianCategoryDto createVeterinarianCategoryDTO) {
-        VeterinarianCategory veterinarianCategory = veterinarianCategoryMapper.toEntity(createVeterinarianCategoryDTO);
+    public VeterinarianCategoryResponseDto createVeterinarianCategory(CreateVeterinarianCategoryDto dto) {
+        VeterinarianCategory veterinarianCategory = veterinarianCategoryMapper.toEntity(dto);
         return veterinarianCategoryMapper.toResponseDto(veterinarianCategoryRepository.save(veterinarianCategory));
     }
 
     @Transactional
-    public VeterinarianCategoryResponseDto updateVeterinarianCategory(UUID id, UpdateVeterinarianCategoryDto updateVeterinarianCategoryDto){
-        VeterinarianCategory veterinarianCategory = validatorEntities.validateVeterinarianCategory(id);
-        veterinarianCategoryMapper.updateVeterinarianCategoryFromDTO(updateVeterinarianCategoryDto, veterinarianCategory);
+    public VeterinarianCategoryResponseDto updateVeterinarianCategory(UUID id, UpdateVeterinarianCategoryDto updateDto){
+        VeterinarianCategory veterinarianCategory = validatorEntities.validate(id, veterinarianCategoryRepository, "Veterinarian Category");
+        veterinarianCategoryMapper.updateVeterinarianCategoryFromDto(updateDto, veterinarianCategory);
         return veterinarianCategoryMapper.toResponseDto(veterinarianCategoryRepository.save(veterinarianCategory));
     }
 

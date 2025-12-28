@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 public interface FinancialMapper {
 
     @Mapping(target = "id", ignore = true)
-    Financial toEntity(CreateFinancialDto createFinancialDto);
+    Financial toEntity(CreateFinancialDto dto);
 
     @Mapping(target = "clientId", source = "client.id")
     @Mapping(target = "name", source = "client.name")

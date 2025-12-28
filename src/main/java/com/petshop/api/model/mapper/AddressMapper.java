@@ -9,5 +9,5 @@ import org.mapstruct.*;
 public interface AddressMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateAddressFromDTO(@Valid UpdateAddressDto updateAddressDto, @MappingTarget Address address);
+    void updateAddressFromDto(@Valid UpdateAddressDto updateAddressDto, @MappingTarget Address address);
 }

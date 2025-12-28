@@ -13,8 +13,10 @@ import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.FinancialPayment;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.mapper.FinancialMapper;
+import com.petshop.api.repository.ClientRepository;
 import com.petshop.api.repository.FinancialPaymentRepository;
 import com.petshop.api.repository.FinancialRepository;
+import com.petshop.api.repository.MonetaryTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,17 +33,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FinancialService {
     private final FinancialRepository financialRepository;
+    private final FinancialPaymentRepository financialPaymentRepository;
+    private final MonetaryTypeRepository monetaryTypeRepository;
+    private final ClientRepository clientRepository;
     private final FinancialMapper financialMapper;
     private final FinancialInstallmentGenerator installmentGenerator;
     private final ValidatorEntities validatorEntities;
     private final FinancialPaymentGenerator paymentGenerator;
-    private final FinancialPaymentRepository financialPaymentRepository;
 
 
     public FinancialResponseDto getFinancialById(UUID id) {
-        return financialRepository.findById(id)
-                .map(financialMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Financial not found"));
+        Financial financial = validatorEntities.validate(id, financialRepository, "Financial");
+        return financialMapper.toResponseDto(financial);
     }
 
     public Page<FinancialResponseDto> getAllFinancial(Pageable pageable){
@@ -67,13 +70,13 @@ public class FinancialService {
     }
 
     @Transactional
-    public List<FinancialResponseDto> createManualFinancial(CreateFinancialDto createFinancialDto){
-        Client client = validatorEntities.validateClient(createFinancialDto.getClientId());
+    public List<FinancialResponseDto> createManualFinancial(CreateFinancialDto dto){
+        Client client = validatorEntities.validate(dto.getClientId(), clientRepository, "Client");
         List<Financial> financials = installmentGenerator.generateInstallmentsFromDto(
                 client,
-                createFinancialDto,
-                createFinancialDto.getInstallments(),
-                createFinancialDto.getIntervalDays()
+                dto,
+                dto.getInstallments(),
+                dto.getIntervalDays()
         );
         List<Financial> savedFinancials = financialRepository.saveAll(financials);
         return savedFinancials.stream()
@@ -83,12 +86,12 @@ public class FinancialService {
 
     @Transactional
     public FinancialResponseDto payFinancial(UUID id, CreateFinancialPaymentDto paymentDto){
-        Financial financial = validatorEntities.validateFinancial(id);
+        Financial financial = validatorEntities.validate(id,financialRepository, "Financial");
         if(paymentDto.getPaidAmount().compareTo(financial.getBalance()) > 0){
             throw new BusinessException("The paid amount cannot be greater than the financial amount.");
         }
         FinancialPayment financialPayment = financialMapper.toPaymentEntity(paymentDto);
-        financialPayment.setMonetaryType(validatorEntities.validateMonetaryType(paymentDto.getMonetaryTypeId()));
+        financialPayment.setMonetaryType(validatorEntities.validate(paymentDto.getMonetaryTypeId(),monetaryTypeRepository, "Monetary Type"));
         paymentGenerator.addPayment(financial, financialPayment);
         if(!financial.getIsPaid()&& paymentDto.getNextDueDate() != null){
             financial.setDueDate(paymentDto.getNextDueDate());
@@ -98,7 +101,7 @@ public class FinancialService {
 
     @Transactional
     public FinancialResponseDto refundFinancial(UUID id){
-        FinancialPayment financialPayment = validatorEntities.validateFinancialPayment(id);
+        FinancialPayment financialPayment = validatorEntities.validate(id, financialPaymentRepository, "Financial Payment");
         Financial financial = financialPayment.getFinancial();
         paymentGenerator.revertPayment(financial, financialPayment);
         financialPaymentRepository.delete(financialPayment);

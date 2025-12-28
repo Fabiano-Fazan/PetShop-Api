@@ -2,17 +2,19 @@ package com.petshop.api.service;
 
 import com.petshop.api.domain.medicalAppointment.AppointmentTimeCalculator;
 import com.petshop.api.domain.medicalAppointment.AppointmentUpdater;
-import com.petshop.api.domain.validator.ValidateAppointment;
+import com.petshop.api.domain.validator.ValidatorAppointment;
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateMedicalAppointmentDto;
 import com.petshop.api.dto.request.UpdateMedicalAppointmentDto;
 import com.petshop.api.dto.response.MedicalAppointmentResponseDto;
-import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.MedicalAppointment;
 import com.petshop.api.model.enums.AppointmentStatus;
 import com.petshop.api.model.mapper.MedicalAppointmentMapper;
+import com.petshop.api.repository.AnimalRepository;
+import com.petshop.api.repository.ClientRepository;
 import com.petshop.api.repository.MedicalAppointmentRepository;
+import com.petshop.api.repository.VeterinarianRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +29,13 @@ import java.util.UUID;
 public class MedicalAppointmentService {
     private final MedicalAppointmentMapper medicalAppointmentMapper;
     private final MedicalAppointmentRepository medicalAppointmentRepository;
+    private final ClientRepository clientRepository;
+    private final AnimalRepository animalRepository;
+    private final VeterinarianRepository veterinarianRepository;
     private final ValidatorEntities validatorEntities;
     private final AppointmentTimeCalculator timeCalculator;
     private final AppointmentUpdater updaterAppointment;
-    private final ValidateAppointment validateAppointment;
+    private final ValidatorAppointment validatorAppointment;
 
 
     public Page<MedicalAppointmentResponseDto> getAllMedicalAppointments(Pageable pageable) {
@@ -39,7 +44,7 @@ public class MedicalAppointmentService {
     }
 
     public MedicalAppointmentResponseDto getMedicalAppointmentById(UUID id) {
-        MedicalAppointment medicalAppointmentById = validatorEntities.validateMedicalAppointment(id);
+        MedicalAppointment medicalAppointmentById = validatorEntities.validate(id, medicalAppointmentRepository, "Medical Appointment");
         return medicalAppointmentMapper.toResponseDto(medicalAppointmentById);
     }
 
@@ -54,23 +59,23 @@ public class MedicalAppointmentService {
     }
 
     @Transactional
-    public MedicalAppointmentResponseDto createMedicalAppointment(CreateMedicalAppointmentDto createMedicalAppointmentDTO) {
-        LocalDateTime start = createMedicalAppointmentDTO.getAppointmentStartTime();
-        LocalDateTime end = timeCalculator.end(start, createMedicalAppointmentDTO.getDurationMinutes());
-        validateAppointment.validateAppointmentTimeConflict(createMedicalAppointmentDTO.getVeterinarianId(), start, end);
-        MedicalAppointment appointment = medicalAppointmentMapper.toEntity(createMedicalAppointmentDTO);
+    public MedicalAppointmentResponseDto createMedicalAppointment(CreateMedicalAppointmentDto dto) {
+        LocalDateTime start = dto.getAppointmentStartTime();
+        LocalDateTime end = timeCalculator.end(start, dto.getDurationMinutes());
+        validatorAppointment.validateAppointmentTimeConflict(dto.getVeterinarianId(), start, end);
+        MedicalAppointment appointment = medicalAppointmentMapper.toEntity(dto);
         appointment.setAppointmentEndTime(end);
-        appointment.setClient(validatorEntities.validateClient(createMedicalAppointmentDTO.getClientId()));
-        appointment.setAnimal(validatorEntities.validateAnimal(createMedicalAppointmentDTO.getAnimalId()));
-        appointment.setVeterinarian(validatorEntities.validateVeterinarian(createMedicalAppointmentDTO.getVeterinarianId()));
+        appointment.setClient(validatorEntities.validate(dto.getClientId(), clientRepository, "Client"));
+        appointment.setAnimal(validatorEntities.validate(dto.getAnimalId(), animalRepository, "Animal"));
+        appointment.setVeterinarian(validatorEntities.validate(dto.getVeterinarianId(), veterinarianRepository, "Veterinarian"));
         appointment.setAppointmentStatus(AppointmentStatus.SCHEDULED);
         return medicalAppointmentMapper.toResponseDto(medicalAppointmentRepository.save(appointment));
     }
 
     @Transactional
-    public MedicalAppointmentResponseDto updateMedicalAppointment(UUID id, UpdateMedicalAppointmentDto updateMedicalAppointmentDto){
-        MedicalAppointment medicalAppointment = validatorEntities.validateMedicalAppointment(id);
-        updaterAppointment.updateAppointment(medicalAppointment, updateMedicalAppointmentDto);
+    public MedicalAppointmentResponseDto updateMedicalAppointment(UUID id, UpdateMedicalAppointmentDto updateDto){
+        MedicalAppointment medicalAppointment = validatorEntities.validate(id, medicalAppointmentRepository, "Medical Appointment");
+        updaterAppointment.updateAppointment(medicalAppointment, updateDto);
         return medicalAppointmentMapper.toResponseDto(medicalAppointmentRepository.save(medicalAppointment));
     }
 
@@ -79,9 +84,7 @@ public class MedicalAppointmentService {
         if (!medicalAppointmentRepository.existsById(id)){
             throw new ResourceNotFoundException("Appointment not found");
         }
-        if (!validatorEntities.validateMedicalAppointmentCanBeDeleted(id)){
-            throw new BusinessException("Only appointments with status SCHEDULED can be deleted");
-        }
+        validatorAppointment.validateMedicalAppointmentCanBeDeleted(id);
         medicalAppointmentRepository.deleteById(id);
     }
 }

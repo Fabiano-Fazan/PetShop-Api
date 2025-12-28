@@ -9,6 +9,7 @@ import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Product;
 import com.petshop.api.model.entities.ProductCategory;
 import com.petshop.api.model.mapper.ProductMapper;
+import com.petshop.api.repository.ProductCategoryRepository;
 import com.petshop.api.repository.ProductRepository;
 import com.petshop.api.repository.ProductSaleRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,9 +25,16 @@ import java.util.UUID;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductSaleRepository productSaleRepository;
+    private final ProductCategoryRepository productCategoryRepository;
     private final ProductMapper productMapper;
     private final ValidatorEntities validatorEntities;
-    private final ProductSaleRepository productSaleRepository;
+
+
+    public ProductResponseDto getProductById(UUID id) {
+        Product product = validatorEntities.validate(id, productRepository, "Product");
+        return productMapper.toResponseDto(product);
+    }
 
 
     public Page<ProductResponseDto> getAllProducts(Pageable pageable) {
@@ -35,7 +43,7 @@ public class ProductService {
     }
 
     public Page<ProductResponseDto> getProductByCategory(UUID categoryId, Pageable pageable) {
-        ProductCategory productCategory = validatorEntities.validateProductCategory(categoryId);
+        ProductCategory productCategory = validatorEntities.validate(categoryId, productCategoryRepository, "Product Category");
         return productRepository.findByCategory(productCategory, pageable)
                 .map(productMapper::toResponseDto);
     }
@@ -45,24 +53,19 @@ public class ProductService {
                 .map(productMapper::toResponseDto);
     }
 
-    public ProductResponseDto getProductById(UUID id) {
-        return productRepository.findById(id)
-                .map(productMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-    }
 
     @Transactional
-    public ProductResponseDto createProduct(CreateProductDto createProductDTO) {
-        Product product = productMapper.toEntity(createProductDTO);
-        product.setCategory(validatorEntities.validateProductCategory(createProductDTO.getCategoryId()));
+    public ProductResponseDto createProduct(CreateProductDto dto) {
+        Product product = productMapper.toEntity(dto);
+        product.setCategory(validatorEntities.validate(dto.getCategoryId(), productCategoryRepository, "Product Category"));
         return productMapper.toResponseDto(productRepository.save(product));
     }
 
     @Transactional
-    public ProductResponseDto updateProduct(UUID id, UpdateProductDto updateProductDTO) {
-        Product product = validatorEntities.validateProduct(id);
-        productMapper.updateProductFromDTO(updateProductDTO, product);
-        product.setCategory(validatorEntities.validateProductCategory(updateProductDTO.getCategoryId()));
+    public ProductResponseDto updateProduct(UUID id, UpdateProductDto updateDto) {
+        Product product = validatorEntities.validate(id, productRepository, "Product");
+        productMapper.updateProductFromDto(updateDto, product);
+        product.setCategory(validatorEntities.validate(updateDto.getCategoryId(), productCategoryRepository, "Product Category"));
         return productMapper.toResponseDto(productRepository.save(product));
     }
 

@@ -10,12 +10,12 @@ import org.mapstruct.*;
 public interface VeterinarianCategoryMapper {
 
     @Mapping(target = "id", ignore = true)
-    VeterinarianCategory toEntity(CreateVeterinarianCategoryDto createVeterinarianCategoryDTO);
+    VeterinarianCategory toEntity(CreateVeterinarianCategoryDto dto);
 
 
     VeterinarianCategoryResponseDto toResponseDto(VeterinarianCategory veterinarianCategory);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
-    void updateVeterinarianCategoryFromDTO(UpdateVeterinarianCategoryDto updateVeterinarianCategoryDto, @MappingTarget VeterinarianCategory veterinarianCategory);
+    void updateVeterinarianCategoryFromDto(UpdateVeterinarianCategoryDto updateVeterinarianCategoryDto, @MappingTarget VeterinarianCategory veterinarianCategory);
 }

@@ -14,7 +14,7 @@ public interface MedicalAppointmentMapper {
     @Mapping(target = "appointmentStatus", ignore = true)
     @Mapping(target = "veterinarian", ignore = true)
     @Mapping(target = "notes", source = "notes")
-    MedicalAppointment toEntity(CreateMedicalAppointmentDto createMedicalAppointmentDTO);
+    MedicalAppointment toEntity(CreateMedicalAppointmentDto dto);
 
     @Mapping(target = "veterinarianName", source = "veterinarian.name")
     @Mapping(target = "veterinarianId", source = "veterinarian.id")

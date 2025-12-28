@@ -14,12 +14,12 @@ import org.mapstruct.MappingTarget;
 public interface ClientMapper {
 
     @Mapping(target = "id", ignore = true)
-    Client toEntity(CreateClientDto createClientDTO);
+    Client toEntity(CreateClientDto dto);
 
 
     ClientResponseDto toResponseDto(Client client);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "address", ignore = true)
-    void updateClientFromDTO(UpdateClientDto updateClientDTO, @MappingTarget Client client);
+    void updateClientFromDto(UpdateClientDto updateClientDto, @MappingTarget Client client);
 }

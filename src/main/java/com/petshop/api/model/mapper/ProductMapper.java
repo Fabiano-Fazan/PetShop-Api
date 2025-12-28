@@ -12,7 +12,7 @@ public interface ProductMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "quantityInStock", defaultValue= "0")
-    Product toEntity(CreateProductDto createProductDTO);
+    Product toEntity(CreateProductDto dto);
 
 
     @Mapping(target = "category", source = "category.name")
@@ -22,6 +22,6 @@ public interface ProductMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
-    void updateProductFromDTO(UpdateProductDto updateProductDTO, @MappingTarget Product product);
+    void updateProductFromDto(UpdateProductDto updateProductDto, @MappingTarget Product product);
 }
 

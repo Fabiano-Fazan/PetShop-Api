@@ -13,12 +13,12 @@ import org.mapstruct.MappingTarget;
 public interface AnimalMapper {
 
     @Mapping(target = "id", ignore = true)
-    Animal toEntity(CreateAnimalDto createAnimalDTO);
+    Animal toEntity(CreateAnimalDto dto);
 
 
     @Mapping(target = "clientId",source = "client.id")
     AnimalResponseDto toResponseDto(Animal animal);
 
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
-    void updateAnimalFromDTO(UpdateAnimalDto updateAnimalDTO, @MappingTarget Animal animal);
+    void updateAnimalFromDto(UpdateAnimalDto updateAnimalDto, @MappingTarget Animal animal);
 }

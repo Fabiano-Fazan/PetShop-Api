@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
-public class ResourceExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(CpfAlreadyExistsException.class)
     public ResponseEntity<StandardError> cpfAlreadyExists(CpfAlreadyExistsException e, HttpServletRequest request){
@@ -73,6 +73,19 @@ public class ResourceExceptionHandler {
         err.setStatus(status.value());
         err.setError("Conflict");
         err.setMessage(e.getMessage());
+        err.setPath(request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<StandardError> runtimeException(HttpServletRequest request){
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        StandardError err = new StandardError();
+        err.setTimestamp(LocalDateTime.now());
+        err.setStatus(status.value());
+        err.setError("Internal Server Error");
+        err.setMessage("Internal error, please contact the administrator.");
         err.setPath(request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }

@@ -1,6 +1,7 @@
 package com.petshop.api.controller;
 
 import com.petshop.api.dto.request.CreateMonetaryType;
+import com.petshop.api.dto.request.UpdateMonetaryTypeDto;
 import com.petshop.api.dto.response.MonetaryTypeResponseDto;
 import com.petshop.api.service.MonetaryTypeService;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,12 @@ public class MonetaryTypeController {
     public ResponseEntity<MonetaryTypeResponseDto> createMonetaryType(@RequestBody CreateMonetaryType createMonetaryTypeDTO){
         MonetaryTypeResponseDto createdMonetaryType = monetaryTypeService.createMonetaryType(createMonetaryTypeDTO);
         return new ResponseEntity<>(createdMonetaryType, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<MonetaryTypeResponseDto> updateMonetaryType(@PathVariable UUID id, @RequestBody UpdateMonetaryTypeDto updateMonetaryTypeDto){
+        MonetaryTypeResponseDto updatedMonetaryType = monetaryTypeService.updateMonetaryType(id, updateMonetaryTypeDto);
+        return ResponseEntity.ok(updatedMonetaryType);
     }
 
     @DeleteMapping("/{id}")

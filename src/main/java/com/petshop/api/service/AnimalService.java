@@ -8,6 +8,7 @@ import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Animal;
 import com.petshop.api.model.mapper.AnimalMapper;
 import com.petshop.api.repository.AnimalRepository;
+import com.petshop.api.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final AnimalMapper animalMapper;
+    private final ClientRepository clientRepository;
     private final ValidatorEntities validatorEntities;
 
 
@@ -30,10 +32,9 @@ public class AnimalService {
                 .map(animalMapper::toResponseDto);
     }
 
-    public AnimalResponseDto getAnimalById(UUID id){
-        return animalRepository.findById(id)
-                .map(animalMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Animal not found"));
+    public AnimalResponseDto getAnimalById(UUID id) {
+        Animal animal = validatorEntities.validate(id, animalRepository, "Animal");
+        return animalMapper.toResponseDto(animal);
     }
 
     public Page<AnimalResponseDto> getAnimalsBySpecies(String species, Pageable pageable){
@@ -47,19 +48,18 @@ public class AnimalService {
     }
 
     @Transactional
-    public AnimalResponseDto createAnimal(CreateAnimalDto createAnimalDTO){
-        Animal animal = animalMapper.toEntity(createAnimalDTO);
-        animal.setClient(validatorEntities.validateClient(createAnimalDTO.getClientId()));
+    public AnimalResponseDto createAnimal(CreateAnimalDto dto){
+        Animal animal = animalMapper.toEntity(dto);
+        animal.setClient(validatorEntities.validate(dto.getClientId(),clientRepository, "Client"));
         return animalMapper.toResponseDto(animalRepository.save(animal));
     }
 
     @Transactional
-    public AnimalResponseDto updateAnimal(UUID id, UpdateAnimalDto updateAnimalDTO){
-        Animal animal = validatorEntities.validateAnimal(id);
-        animalMapper.updateAnimalFromDTO(updateAnimalDTO, animal);
+    public AnimalResponseDto updateAnimal(UUID id, UpdateAnimalDto updateDto){
+        Animal animal = validatorEntities.validate(id, animalRepository, "Animal");
+        animalMapper.updateAnimalFromDto(updateDto, animal);
         return animalMapper.toResponseDto(animalRepository.save(animal));
     }
-
 
     @Transactional
     public void deleteAnimal(UUID id){

@@ -10,10 +10,10 @@ import org.mapstruct.*;
 public interface ProductCategoryMapper {
 
     @Mapping(target = "id", ignore = true)
-    ProductCategory toEntity(CreateProductCategoryDto createProductCategoryDTO);
+    ProductCategory toEntity(CreateProductCategoryDto dto);
 
     ProductCategoryResponseDto toResponseDto(ProductCategory productCategory);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    void updateProductCategoryFromDTO(UpdateProductCategoryDto updateProductCategoryDTO, @MappingTarget ProductCategory productCategory);
+    void updateProductCategoryFromDto(UpdateProductCategoryDto updateProductCategoryDto, @MappingTarget ProductCategory productCategory);
 }

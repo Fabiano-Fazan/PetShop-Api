@@ -35,9 +35,9 @@ public class ClientService {
     }
 
     public ClientResponseDto getClientById(UUID id) {
-        return clientRepository.findById(id)
-                .map(clientMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Client not found"));
+        Client client = validatorEntities.validate(id, clientRepository, "Client");
+        return clientMapper.toResponseDto(client);
+
     }
 
     public Page<ClientResponseDto> getClientByNameContainingIgnoreCase(String name, Pageable pageable) {
@@ -46,19 +46,19 @@ public class ClientService {
     }
 
     @Transactional
-    public ClientResponseDto createClient(CreateClientDto createClientDTO) {
-        if (clientRepository.existsByCpf(createClientDTO.getCpf())){
+    public ClientResponseDto createClient(CreateClientDto dto) {
+        if (clientRepository.existsByCpf(dto.getCpf())){
             throw new CpfAlreadyExistsException("This CPF already exists");
         }
-        Client client = clientMapper.toEntity(createClientDTO);
+        Client client = clientMapper.toEntity(dto);
         return clientMapper.toResponseDto(clientRepository.save(client));
     }
 
     @Transactional
-    public ClientResponseDto updateClient(UUID id, UpdateClientDto clientDTO) {
-        Client client = validatorEntities.validateClient(id);
-        clientMapper.updateClientFromDTO(clientDTO, client) ;
-        addressMapper.updateAddressFromDTO(clientDTO.getAddress(), client.getAddress());
+    public ClientResponseDto updateClient(UUID id, UpdateClientDto updateDto) {
+        Client client = validatorEntities.validate(id, clientRepository, "Client");
+        clientMapper.updateClientFromDto(updateDto, client) ;
+        addressMapper.updateAddressFromDto(updateDto.getAddress(), client.getAddress());
         return clientMapper.toResponseDto(clientRepository.save(client));
     }
 

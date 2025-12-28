@@ -1,6 +1,8 @@
 package com.petshop.api.service;
 
+import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateMonetaryType;
+import com.petshop.api.dto.request.UpdateMonetaryTypeDto;
 import com.petshop.api.dto.response.MonetaryTypeResponseDto;
 import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
@@ -20,14 +22,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class MonetaryTypeService {
     private final MonetaryTypeRepository monetaryTypeRepository;
-    private final MonetaryTypeMapper monetaryTypeMapper;
     private final FinancialPaymentRepository financialPaymentRepository;
+    private final MonetaryTypeMapper monetaryTypeMapper;
+    private final ValidatorEntities validatorEntities;
 
 
     public MonetaryTypeResponseDto getMonetaryTypeById(UUID id){
-        return monetaryTypeRepository.findById(id)
-                .map(monetaryTypeMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Monetary type not found"));
+        MonetaryType monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary Type");
+        return monetaryTypeMapper.toResponseDto(monetaryType);
     }
 
     public Page<MonetaryTypeResponseDto> getAllMonetaryTypes(Pageable pageable) {
@@ -41,8 +43,15 @@ public class MonetaryTypeService {
     }
 
     @Transactional
-    public MonetaryTypeResponseDto createMonetaryType(CreateMonetaryType createMonetaryTypeDTO){
-        MonetaryType monetaryType = monetaryTypeMapper.toEntity(createMonetaryTypeDTO);
+    public MonetaryTypeResponseDto createMonetaryType(CreateMonetaryType dto){
+        MonetaryType monetaryType = monetaryTypeMapper.toEntity(dto);
+        return monetaryTypeMapper.toResponseDto(monetaryTypeRepository.save(monetaryType));
+    }
+
+    @Transactional
+    public MonetaryTypeResponseDto updateMonetaryType(UUID id, UpdateMonetaryTypeDto dto){
+        MonetaryType monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary Type");
+        monetaryTypeMapper.updateMonetaryTypeFromDto(dto, monetaryType);
         return monetaryTypeMapper.toResponseDto(monetaryTypeRepository.save(monetaryType));
     }
 

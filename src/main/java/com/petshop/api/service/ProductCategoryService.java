@@ -28,9 +28,8 @@ public class ProductCategoryService {
 
 
     public ProductCategoryResponseDto getProductCategoryById(UUID id){
-        return productCategoryRepository.findById(id)
-                .map(productCategoryMapper::toResponseDto)
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
+        ProductCategory productCategory = validatorEntities.validate(id, productCategoryRepository, "Product Category");
+        return productCategoryMapper.toResponseDto(productCategory);
     }
 
     public Page<ProductCategoryResponseDto> getAllProductCategories(Pageable pageable) {
@@ -51,8 +50,8 @@ public class ProductCategoryService {
 
     @Transactional
     public ProductCategoryResponseDto updateProductCategory(UUID id, UpdateProductCategoryDto updateProductCategoryDTO) {
-        ProductCategory productCategory = validatorEntities.validateProductCategory(id);
-        productCategoryMapper.updateProductCategoryFromDTO(updateProductCategoryDTO, productCategory);
+        ProductCategory productCategory = validatorEntities.validate(id, productCategoryRepository, "Product Category");
+        productCategoryMapper.updateProductCategoryFromDto(updateProductCategoryDTO, productCategory);
         return productCategoryMapper.toResponseDto(productCategoryRepository.save(productCategory));
     }
 

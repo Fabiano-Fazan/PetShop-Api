@@ -11,7 +11,7 @@ public interface VeterinarianMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
-    Veterinarian toEntity(CreateVeterinarianDto createVeterinarianDTO);
+    Veterinarian toEntity(CreateVeterinarianDto dto);
 
 
     @Mapping(target = "category", source = "category.name")
@@ -20,5 +20,5 @@ public interface VeterinarianMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "category", ignore = true)
-    void updateVeterinarianFromDTO(UpdateVeterinarianDto updateVeterinarianDTO, @MappingTarget Veterinarian veterinarian);
+    void updateVeterinarianFromDto(UpdateVeterinarianDto updateVeterinarianDto, @MappingTarget Veterinarian veterinarian);
 }
