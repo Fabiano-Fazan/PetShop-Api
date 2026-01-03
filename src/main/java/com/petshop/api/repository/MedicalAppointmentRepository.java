@@ -1,6 +1,9 @@
 package com.petshop.api.repository;
 
+import com.petshop.api.model.entities.Animal;
+import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.MedicalAppointment;
+import com.petshop.api.model.entities.Veterinarian;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +33,7 @@ public interface MedicalAppointmentRepository extends JpaRepository<MedicalAppoi
 
     Page<MedicalAppointment> findByVeterinarianNameContainingIgnoreCase(String name, Pageable pageable);
 
-
-    boolean existsByVeterinarianId(UUID veterinarianId);
+    boolean existsByVeterinarian(Veterinarian veterinarian);
+    boolean existsByAnimal(Animal animal);
+    boolean existsByClient(Client client);
 }

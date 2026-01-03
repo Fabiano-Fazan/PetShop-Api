@@ -28,12 +28,12 @@ public class StockMovementService {
 
     @Transactional
     public void registerInput(Product product, Integer quantity, String description, String invoice, BigDecimal price, Sale sale){
-        Product productDb = validatorEntities.validate(product.getId(), productRepository, "Product");
-        productDb.setQuantityInStock(product.getQuantityInStock() + quantity);
-        productRepository.save(productDb);
+        var productSaved = validatorEntities.validate(product.getId(), productRepository, "Product");
+        productSaved.setQuantityInStock(product.getQuantityInStock() + quantity);
+        productRepository.save(productSaved);
 
         StockMovement stockMovement = StockMovement.builder()
-                .product(productDb)
+                .product(productSaved)
                 .quantity(quantity)
                 .description(description)
                 .invoice(invoice)
@@ -46,23 +46,23 @@ public class StockMovementService {
 
     @Transactional
     public void registerInput(UUID id, CreateStockMovementDto dto){
-        Product product = productRepository.findWithLockById(id)
+        var product = productRepository.findWithLockById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         this.registerInput(product, dto.getQuantity(), dto.getDescription(), dto.getInvoice(), dto.getPrice(), null);
     }
 
     @Transactional
     public void registerOutput(Product product, Integer quantity, String description, BigDecimal price, Sale sale){
-        Product productDb = validatorEntities.validate(product.getId(), productRepository, "Product");
-        if(productDb.getQuantityInStock() < quantity){
+        var productSaved = validatorEntities.validate(product.getId(), productRepository, "Product");
+        if(productSaved.getQuantityInStock() < quantity){
             throw new InsufficientStockException("Not enough stock for product %s. Requested: %s, Available: %s"
-                    .formatted(productDb.getName(), quantity, productDb.getQuantityInStock()));
+                    .formatted(productSaved.getName(), quantity, productSaved.getQuantityInStock()));
         }
-        productDb.setQuantityInStock(product.getQuantityInStock() - quantity);
-        productRepository.save(productDb);
+        productSaved.setQuantityInStock(product.getQuantityInStock() - quantity);
+        productRepository.save(productSaved);
 
         StockMovement stockMovement = StockMovement.builder()
-                .product(productDb)
+                .product(productSaved)
                 .quantity(quantity)
                 .description(description)
                 .price(price)

@@ -1,15 +1,16 @@
-package com.petshop.api.dto.request;
+package com.petshop.api.dto.update;
 
-
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
-public class UpdateClientDto {
+public class UpdateVeterinarianDto {
 
     @Size(min = 1, message = "Name cannot be empty")
     private String name;
@@ -20,7 +21,8 @@ public class UpdateClientDto {
     )
     private String phone;
 
-    @Valid
-    private UpdateAddressDto address;
+    @Email(message = "Email format is invalid")
+    private String email;
 
+    private UUID categoryId;
 }

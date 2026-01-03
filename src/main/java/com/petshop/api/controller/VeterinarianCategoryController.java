@@ -1,7 +1,7 @@
 package com.petshop.api.controller;
 
 import com.petshop.api.dto.request.CreateVeterinarianCategoryDto;
-import com.petshop.api.dto.request.UpdateVeterinarianCategoryDto;
+import com.petshop.api.dto.update.UpdateVeterinarianCategoryDto;
 import com.petshop.api.dto.response.VeterinarianCategoryResponseDto;
 import com.petshop.api.service.VeterinarianCategoryService;
 import jakarta.validation.Valid;

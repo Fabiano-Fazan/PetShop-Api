@@ -1,6 +1,5 @@
-package com.petshop.api.dto.request;
+package com.petshop.api.dto.update;
 
-import com.petshop.api.model.entities.ProductCategory;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

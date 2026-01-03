@@ -2,10 +2,9 @@ package com.petshop.api.service;
 
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateVeterinarianDto;
-import com.petshop.api.dto.request.UpdateVeterinarianDto;
+import com.petshop.api.dto.update.UpdateVeterinarianDto;
 import com.petshop.api.dto.response.VeterinarianResponseDto;
 import com.petshop.api.exception.BusinessException;
-import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Veterinarian;
 import com.petshop.api.model.mapper.VeterinarianMapper;
 import com.petshop.api.repository.MedicalAppointmentRepository;
@@ -36,7 +35,7 @@ public class VeterinarianService {
     }
 
     public VeterinarianResponseDto getVeterinarianById(UUID id){
-        Veterinarian veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
+        var veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
         return veterinarianMapper.toResponseDto(veterinarian);
     }
 
@@ -47,26 +46,28 @@ public class VeterinarianService {
 
     @Transactional
     public VeterinarianResponseDto createVeterinarian(CreateVeterinarianDto dto){
-        Veterinarian veterinarian = veterinarianMapper.toEntity(dto);
+        var veterinarian = veterinarianMapper.toEntity(dto);
         veterinarian.setCategory(validatorEntities.validate(dto.getCategoryId(), veterinarianCategoryRepository, "Veterinarian Category"));
         return veterinarianMapper.toResponseDto(veterinarianRepository.save(veterinarian));
     }
 
     @Transactional
     public VeterinarianResponseDto updateVeterinarian(UUID id, UpdateVeterinarianDto updateDto){
-        Veterinarian veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
+        var veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
         veterinarianMapper.updateVeterinarianFromDto(updateDto, veterinarian);
         return veterinarianMapper.toResponseDto(veterinarianRepository.save(veterinarian));
     }
 
     @Transactional
     public void deleteVeterinarian(UUID id){
-        if(!veterinarianRepository.existsById(id)){
-            throw new ResourceNotFoundException("Veterinarian not found");
-        }
-        if(medicalAppointmentRepository.existsByVeterinarianId(id)){
-            throw new BusinessException("Cannot delete veterinarian with scheduled medical appointments.");
-        }
+        var veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
+        canDelete(veterinarian);
         veterinarianRepository.deleteById(id);
+    }
+
+    private void canDelete(Veterinarian veterinarian) {
+        if(medicalAppointmentRepository.existsByVeterinarian(veterinarian)){
+            throw new BusinessException("Cannot delete this veterinarian because it is being used by medical appointments");
+        }
     }
 }

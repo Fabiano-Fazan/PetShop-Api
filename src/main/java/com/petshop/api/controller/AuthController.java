@@ -4,6 +4,7 @@ import com.petshop.api.dto.response.AuthResponseDto;
 import com.petshop.api.dto.request.CreateLoginDto;
 import com.petshop.api.dto.request.CreateRegisterDto;
 import com.petshop.api.service.AuthService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,10 +19,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> register(@RequestBody CreateRegisterDto createRegisterDTO){return ResponseEntity.ok(authService.register(createRegisterDTO));}
+    public ResponseEntity<AuthResponseDto> register(@Valid @RequestBody CreateRegisterDto createRegisterDTO){return ResponseEntity.ok(authService.register(createRegisterDTO));}
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@RequestBody CreateLoginDto createLoginDTO){return ResponseEntity.ok(authService.login(createLoginDTO));}
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody CreateLoginDto createLoginDTO){return ResponseEntity.ok(authService.login(createLoginDTO));}
 
 
 

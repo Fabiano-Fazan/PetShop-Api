@@ -3,7 +3,6 @@ package com.petshop.api.domain.sale;
 import com.petshop.api.dto.request.CreateProductSaleDto;
 import com.petshop.api.dto.request.CreateSaleDto;
 import com.petshop.api.exception.ResourceNotFoundException;
-import com.petshop.api.model.entities.Product;
 import com.petshop.api.model.entities.ProductSale;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.repository.ProductRepository;
@@ -20,7 +19,7 @@ public class SaleGenerator {
     private final StockMovementService stockMovementService;
 
     public ProductSale generateProductSale(CreateProductSaleDto dto, Sale sale){
-        Product product = productRepository.findWithLockById(dto.getProductId())
+        var product = productRepository.findWithLockById(dto.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + dto.getProductId()));
 
         return ProductSale.builder()

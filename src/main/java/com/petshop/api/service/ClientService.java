@@ -3,14 +3,15 @@ package com.petshop.api.service;
 
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateClientDto;
-import com.petshop.api.dto.request.UpdateClientDto;
+import com.petshop.api.dto.update.UpdateClientDto;
 import com.petshop.api.dto.response.ClientResponseDto;
+import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.CpfAlreadyExistsException;
-import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.mapper.AddressMapper;
 import com.petshop.api.model.mapper.ClientMapper;
 import com.petshop.api.repository.ClientRepository;
+import com.petshop.api.repository.MedicalAppointmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class ClientService {
 
     private final ClientRepository clientRepository;
+    private final MedicalAppointmentRepository medicalAppointmentRepository;
     private final ClientMapper clientMapper;
     private final AddressMapper addressMapper;
     private final ValidatorEntities validatorEntities;
@@ -35,7 +37,7 @@ public class ClientService {
     }
 
     public ClientResponseDto getClientById(UUID id) {
-        Client client = validatorEntities.validate(id, clientRepository, "Client");
+        var client = validatorEntities.validate(id, clientRepository, "Client");
         return clientMapper.toResponseDto(client);
 
     }
@@ -50,13 +52,13 @@ public class ClientService {
         if (clientRepository.existsByCpf(dto.getCpf())){
             throw new CpfAlreadyExistsException("This CPF already exists");
         }
-        Client client = clientMapper.toEntity(dto);
+        var client = clientMapper.toEntity(dto);
         return clientMapper.toResponseDto(clientRepository.save(client));
     }
 
     @Transactional
     public ClientResponseDto updateClient(UUID id, UpdateClientDto updateDto) {
-        Client client = validatorEntities.validate(id, clientRepository, "Client");
+        var client = validatorEntities.validate(id, clientRepository, "Client");
         clientMapper.updateClientFromDto(updateDto, client) ;
         addressMapper.updateAddressFromDto(updateDto.getAddress(), client.getAddress());
         return clientMapper.toResponseDto(clientRepository.save(client));
@@ -64,9 +66,14 @@ public class ClientService {
 
     @Transactional
     public void deleteClient(UUID id) {
-        if (!clientRepository.existsById(id)){
-            throw new ResourceNotFoundException("Client not found");
+        var client = validatorEntities.validate(id, clientRepository, "Client");
+        canDelete(client);
+        clientRepository.delete(client);
+    }
+
+    private void canDelete(Client client) {
+        if (medicalAppointmentRepository.existsByClient(client)){
+            throw new BusinessException("Cannot delete this client because it is being used by medical appointments");
         }
-        clientRepository.deleteById(id);
     }
 }

@@ -2,7 +2,7 @@ package com.petshop.api.domain.medicalAppointment;
 
 
 import com.petshop.api.domain.validator.ValidatorEntities;
-import com.petshop.api.dto.request.UpdateMedicalAppointmentDto;
+import com.petshop.api.dto.update.UpdateMedicalAppointmentDto;
 import com.petshop.api.model.entities.MedicalAppointment;
 import com.petshop.api.repository.AnimalRepository;
 import com.petshop.api.repository.ClientRepository;

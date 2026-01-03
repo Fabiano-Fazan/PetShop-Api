@@ -8,9 +8,7 @@ import com.petshop.api.dto.request.CreateFinancialPaymentDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.exception.BusinessException;
 import com.petshop.api.exception.ResourceNotFoundException;
-import com.petshop.api.model.entities.Client;
 import com.petshop.api.model.entities.Financial;
-import com.petshop.api.model.entities.FinancialPayment;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.mapper.FinancialMapper;
 import com.petshop.api.repository.ClientRepository;
@@ -43,7 +41,7 @@ public class FinancialService {
 
 
     public FinancialResponseDto getFinancialById(UUID id) {
-        Financial financial = validatorEntities.validate(id, financialRepository, "Financial");
+        var financial = validatorEntities.validate(id, financialRepository, "Financial");
         return financialMapper.toResponseDto(financial);
     }
 
@@ -71,7 +69,7 @@ public class FinancialService {
 
     @Transactional
     public List<FinancialResponseDto> createManualFinancial(CreateFinancialDto dto){
-        Client client = validatorEntities.validate(dto.getClientId(), clientRepository, "Client");
+        var client = validatorEntities.validate(dto.getClientId(), clientRepository, "Client");
         List<Financial> financials = installmentGenerator.generateInstallmentsFromDto(
                 client,
                 dto,
@@ -86,11 +84,11 @@ public class FinancialService {
 
     @Transactional
     public FinancialResponseDto payFinancial(UUID id, CreateFinancialPaymentDto paymentDto){
-        Financial financial = validatorEntities.validate(id,financialRepository, "Financial");
+        var financial = validatorEntities.validate(id,financialRepository, "Financial");
         if(paymentDto.getPaidAmount().compareTo(financial.getBalance()) > 0){
             throw new BusinessException("The paid amount cannot be greater than the financial amount.");
         }
-        FinancialPayment financialPayment = financialMapper.toPaymentEntity(paymentDto);
+        var financialPayment = financialMapper.toPaymentEntity(paymentDto);
         financialPayment.setMonetaryType(validatorEntities.validate(paymentDto.getMonetaryTypeId(),monetaryTypeRepository, "Monetary Type"));
         paymentGenerator.addPayment(financial, financialPayment);
         if(!financial.getIsPaid()&& paymentDto.getNextDueDate() != null){
@@ -101,8 +99,8 @@ public class FinancialService {
 
     @Transactional
     public FinancialResponseDto refundFinancial(UUID id){
-        FinancialPayment financialPayment = validatorEntities.validate(id, financialPaymentRepository, "Financial Payment");
-        Financial financial = financialPayment.getFinancial();
+        var financialPayment = validatorEntities.validate(id, financialPaymentRepository, "Financial Payment");
+        var financial = financialPayment.getFinancial();
         paymentGenerator.revertPayment(financial, financialPayment);
         financialPaymentRepository.delete(financialPayment);
         return financialMapper.toResponseDto(financialRepository.save(financial));

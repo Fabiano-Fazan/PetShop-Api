@@ -45,7 +45,7 @@ public class SaleService {
     }
 
     public SaleResponseDto getSaleById(UUID id) {
-        Sale sale = validatorEntities.validate(id, saleRepository, "Sale");
+        var sale = validatorEntities.validate(id, saleRepository, "Sale");
         return saleMapper.toResponseDto(sale);
 
     }
@@ -58,12 +58,12 @@ public class SaleService {
         newSale.setPaymentType(dto.getPaymentType());
         newSale.setNotes(dto.getNotes());
         dto.getProductSales().forEach(item -> {
-            ProductSale productSale = saleGenerator.generateProductSale(item, newSale);
+            var productSale = saleGenerator.generateProductSale(item, newSale);
             newSale.getProductSales().add(productSale);
                 });
         BigDecimal totalValue = saleGenerator.calculateSaleTotal(dto);
         newSale.setTotalValue(totalValue);
-        Sale savedSale = saleRepository.save(newSale);
+        var savedSale = saleRepository.save(newSale);
         saleGenerator.registerStockMovementsFromSale(savedSale);
         financialService.createFinancialFromSale(
                 savedSale,
@@ -75,10 +75,10 @@ public class SaleService {
 
     @Transactional
     public SaleResponseDto cancelSale(UUID id) {
-        Sale sale = validatorEntities.validate(id, saleRepository, "Sale");
+        var sale = validatorEntities.validate(id, saleRepository, "Sale");
         saleCancel.cancel(sale);
         returnItemsToStock(sale);
-        Sale canceledSale = saleRepository.save(sale);
+        var canceledSale = saleRepository.save(sale);
         return saleMapper.toResponseDto(canceledSale);
     }
 

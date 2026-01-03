@@ -1,4 +1,4 @@
-package com.petshop.api.dto.request;
+package com.petshop.api.dto.update;
 
 import lombok.Getter;
 import lombok.Setter;

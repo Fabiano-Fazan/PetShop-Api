@@ -1,7 +1,7 @@
 package com.petshop.api.controller;
 
 import com.petshop.api.dto.request.CreateProductDto;
-import com.petshop.api.dto.request.UpdateProductDto;
+import com.petshop.api.dto.update.UpdateProductDto;
 import com.petshop.api.dto.response.ProductResponseDto;
 import com.petshop.api.service.ProductService;
 import jakarta.validation.Valid;

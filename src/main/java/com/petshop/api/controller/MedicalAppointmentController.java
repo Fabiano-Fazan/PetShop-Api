@@ -1,7 +1,7 @@
 package com.petshop.api.controller;
 
 import com.petshop.api.dto.request.CreateMedicalAppointmentDto;
-import com.petshop.api.dto.request.UpdateMedicalAppointmentDto;
+import com.petshop.api.dto.update.UpdateMedicalAppointmentDto;
 import com.petshop.api.dto.response.MedicalAppointmentResponseDto;
 import com.petshop.api.service.MedicalAppointmentService;
 import jakarta.validation.Valid;

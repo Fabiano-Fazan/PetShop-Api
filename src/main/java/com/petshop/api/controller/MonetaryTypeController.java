@@ -1,7 +1,7 @@
 package com.petshop.api.controller;
 
 import com.petshop.api.dto.request.CreateMonetaryType;
-import com.petshop.api.dto.request.UpdateMonetaryTypeDto;
+import com.petshop.api.dto.update.UpdateMonetaryTypeDto;
 import com.petshop.api.dto.response.MonetaryTypeResponseDto;
 import com.petshop.api.service.MonetaryTypeService;
 import lombok.RequiredArgsConstructor;

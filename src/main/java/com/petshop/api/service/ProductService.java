@@ -2,12 +2,10 @@ package com.petshop.api.service;
 
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateProductDto;
-import com.petshop.api.dto.request.UpdateProductDto;
+import com.petshop.api.dto.update.UpdateProductDto;
 import com.petshop.api.dto.response.ProductResponseDto;
 import com.petshop.api.exception.BusinessException;
-import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Product;
-import com.petshop.api.model.entities.ProductCategory;
 import com.petshop.api.model.mapper.ProductMapper;
 import com.petshop.api.repository.ProductCategoryRepository;
 import com.petshop.api.repository.ProductRepository;
@@ -32,7 +30,7 @@ public class ProductService {
 
 
     public ProductResponseDto getProductById(UUID id) {
-        Product product = validatorEntities.validate(id, productRepository, "Product");
+        var product = validatorEntities.validate(id, productRepository, "Product");
         return productMapper.toResponseDto(product);
     }
 
@@ -43,7 +41,7 @@ public class ProductService {
     }
 
     public Page<ProductResponseDto> getProductByCategory(UUID categoryId, Pageable pageable) {
-        ProductCategory productCategory = validatorEntities.validate(categoryId, productCategoryRepository, "Product Category");
+        var productCategory = validatorEntities.validate(categoryId, productCategoryRepository, "Product Category");
         return productRepository.findByCategory(productCategory, pageable)
                 .map(productMapper::toResponseDto);
     }
@@ -56,14 +54,14 @@ public class ProductService {
 
     @Transactional
     public ProductResponseDto createProduct(CreateProductDto dto) {
-        Product product = productMapper.toEntity(dto);
+        var product = productMapper.toEntity(dto);
         product.setCategory(validatorEntities.validate(dto.getCategoryId(), productCategoryRepository, "Product Category"));
         return productMapper.toResponseDto(productRepository.save(product));
     }
 
     @Transactional
     public ProductResponseDto updateProduct(UUID id, UpdateProductDto updateDto) {
-        Product product = validatorEntities.validate(id, productRepository, "Product");
+        var product = validatorEntities.validate(id, productRepository, "Product");
         productMapper.updateProductFromDto(updateDto, product);
         product.setCategory(validatorEntities.validate(updateDto.getCategoryId(), productCategoryRepository, "Product Category"));
         return productMapper.toResponseDto(productRepository.save(product));
@@ -71,12 +69,14 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(UUID id) {
-        if (!productRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Product not found");
-            }
-        if (productSaleRepository.existsByProductId(id)){
-            throw new BusinessException("Cannot delete this product because it is being used in sales");
-           }
+        var product = validatorEntities.validate(id, productRepository, "Product");
+        canDelete(product);
         productRepository.deleteById(id);
+    }
+
+    private void canDelete(Product product) {
+        if (productSaleRepository.existsByProduct(product)) {
+            throw new BusinessException("Cannot delete this product because it is being used by sales");
+        }
     }
 }

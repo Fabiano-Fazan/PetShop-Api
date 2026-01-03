@@ -26,7 +26,7 @@ public class ValidatorAppointment {
     }
 
     public void validateMedicalAppointmentCanBeDeleted(UUID id) {
-        MedicalAppointment appointment = validatorEntities.validate(id,medicalAppointmentRepository, "Medical Appointment");
+        MedicalAppointment appointment = validatorEntities.validate(id, medicalAppointmentRepository, "Medical Appointment");
         if (appointment.getAppointmentStatus() != AppointmentStatus.SCHEDULED) {
             throw new BusinessException("Only appointments with status SCHEDULED can be deleted");
         }

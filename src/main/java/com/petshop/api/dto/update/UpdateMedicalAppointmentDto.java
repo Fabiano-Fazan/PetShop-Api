@@ -1,4 +1,4 @@
-package com.petshop.api.dto.request;
+package com.petshop.api.dto.update;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.petshop.api.model.enums.AppointmentStatus;

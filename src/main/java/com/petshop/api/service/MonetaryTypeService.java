@@ -2,10 +2,9 @@ package com.petshop.api.service;
 
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateMonetaryType;
-import com.petshop.api.dto.request.UpdateMonetaryTypeDto;
+import com.petshop.api.dto.update.UpdateMonetaryTypeDto;
 import com.petshop.api.dto.response.MonetaryTypeResponseDto;
 import com.petshop.api.exception.BusinessException;
-import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.MonetaryType;
 import com.petshop.api.model.mapper.MonetaryTypeMapper;
 import com.petshop.api.repository.FinancialPaymentRepository;
@@ -28,7 +27,7 @@ public class MonetaryTypeService {
 
 
     public MonetaryTypeResponseDto getMonetaryTypeById(UUID id){
-        MonetaryType monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary Type");
+        var monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary Type");
         return monetaryTypeMapper.toResponseDto(monetaryType);
     }
 
@@ -44,7 +43,7 @@ public class MonetaryTypeService {
 
     @Transactional
     public MonetaryTypeResponseDto createMonetaryType(CreateMonetaryType dto){
-        MonetaryType monetaryType = monetaryTypeMapper.toEntity(dto);
+        var monetaryType = monetaryTypeMapper.toEntity(dto);
         return monetaryTypeMapper.toResponseDto(monetaryTypeRepository.save(monetaryType));
     }
 
@@ -57,12 +56,14 @@ public class MonetaryTypeService {
 
     @Transactional
     public void deleteMonetaryType(UUID id){
-        if (!monetaryTypeRepository.existsById(id)){
-            throw new ResourceNotFoundException("Monetary type not found");
-             }
-        if (financialPaymentRepository.existsByMonetaryTypeId(id)){
+        var monetaryType = validatorEntities.validate(id,monetaryTypeRepository,"Monetary Type");
+        canDelete(monetaryType);
+        monetaryTypeRepository.delete(monetaryType);
+    }
+
+    private void canDelete(MonetaryType monetaryType) {
+        if (financialPaymentRepository.existsByMonetaryType(monetaryType)){
             throw new BusinessException("Cannot delete this monetary type because it is being used by financial");
-             }
-        monetaryTypeRepository.deleteById(id);
+        }
     }
 }

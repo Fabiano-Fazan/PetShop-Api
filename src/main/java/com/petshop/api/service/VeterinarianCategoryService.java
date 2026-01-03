@@ -4,10 +4,9 @@ package com.petshop.api.service;
 
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.request.CreateVeterinarianCategoryDto;
-import com.petshop.api.dto.request.UpdateVeterinarianCategoryDto;
+import com.petshop.api.dto.update.UpdateVeterinarianCategoryDto;
 import com.petshop.api.dto.response.VeterinarianCategoryResponseDto;
 import com.petshop.api.exception.BusinessException;
-import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.VeterinarianCategory;
 import com.petshop.api.model.mapper.VeterinarianCategoryMapper;
 import com.petshop.api.repository.VeterinarianCategoryRepository;
@@ -48,25 +47,27 @@ public class VeterinarianCategoryService {
 
     @Transactional
     public VeterinarianCategoryResponseDto createVeterinarianCategory(CreateVeterinarianCategoryDto dto) {
-        VeterinarianCategory veterinarianCategory = veterinarianCategoryMapper.toEntity(dto);
+        var veterinarianCategory = veterinarianCategoryMapper.toEntity(dto);
         return veterinarianCategoryMapper.toResponseDto(veterinarianCategoryRepository.save(veterinarianCategory));
     }
 
     @Transactional
     public VeterinarianCategoryResponseDto updateVeterinarianCategory(UUID id, UpdateVeterinarianCategoryDto updateDto){
-        VeterinarianCategory veterinarianCategory = validatorEntities.validate(id, veterinarianCategoryRepository, "Veterinarian Category");
+        var veterinarianCategory = validatorEntities.validate(id, veterinarianCategoryRepository, "Veterinarian Category");
         veterinarianCategoryMapper.updateVeterinarianCategoryFromDto(updateDto, veterinarianCategory);
         return veterinarianCategoryMapper.toResponseDto(veterinarianCategoryRepository.save(veterinarianCategory));
     }
 
     @Transactional
     public void deleteVeterinarianCategory(UUID id){
-        if (!veterinarianCategoryRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Veterinarian category not found");
+        var category = validatorEntities.validate(id,veterinarianCategoryRepository, "Veterinarian Category");
+        canDelete(category);
+        veterinarianCategoryRepository.delete(category);
+    }
+
+    private void canDelete(VeterinarianCategory category) {
+        if(veterinarianRepository.existsByCategory(category)){
+            throw new BusinessException("Cannot delete this category because it is being used by veterinarians");
         }
-        if (veterinarianRepository.existsByCategoryId(id)) {
-            throw new BusinessException("Cannot delete this veterinarian category because it is being used by veterinarians");
-        }
-        veterinarianCategoryRepository.deleteById(id);
     }
 }

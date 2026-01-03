@@ -23,10 +23,9 @@ public class CreateClientDto {
     )
     private String phone;
 
-    @CPF(message = "CPF ir invalid")
+    @CPF(message = "CPF is invalid")
     @NotBlank(message = "CPF is required")
     private String cpf;
-
 
     @Valid
     @NotNull(message = "Address is required")

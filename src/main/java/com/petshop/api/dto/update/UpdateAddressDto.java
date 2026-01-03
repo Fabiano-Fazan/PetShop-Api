@@ -1,4 +1,4 @@
-package com.petshop.api.dto.request;
+package com.petshop.api.dto.update;
 
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

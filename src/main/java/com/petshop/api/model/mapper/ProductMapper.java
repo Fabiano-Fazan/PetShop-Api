@@ -2,7 +2,7 @@ package com.petshop.api.model.mapper;
 
 
 import com.petshop.api.dto.request.CreateProductDto;
-import com.petshop.api.dto.request.UpdateProductDto;
+import com.petshop.api.dto.update.UpdateProductDto;
 import com.petshop.api.dto.response.ProductResponseDto;
 import com.petshop.api.model.entities.Product;
 import org.mapstruct.*;
