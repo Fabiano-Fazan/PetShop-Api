@@ -7,7 +7,6 @@ import com.petshop.api.dto.request.CreateFinancialDto;
 import com.petshop.api.dto.request.CreateFinancialPaymentDto;
 import com.petshop.api.dto.response.FinancialResponseDto;
 import com.petshop.api.exception.BusinessException;
-import com.petshop.api.exception.ResourceNotFoundException;
 import com.petshop.api.model.entities.Financial;
 import com.petshop.api.model.entities.Sale;
 import com.petshop.api.model.mapper.FinancialMapper;
@@ -107,11 +106,17 @@ public class FinancialService {
     }
 
     @Transactional
-    public void deleteFinancial(UUID id){
-        if(!financialRepository.existsById(id)){
-            throw new ResourceNotFoundException("Financial not found");
+    public void deleteFinancial(UUID id) {
+        var financial = validatorEntities.validate(id, financialRepository, "Financial");
+        canDelete(financial);
+        financialRepository.delete(financial);
+    }
+
+
+    private void canDelete(Financial financial) {
+        if (!financial.getIsPaid().equals(Boolean.FALSE)){
+            throw new BusinessException("Cannot delete financial that has been paid");
         }
-        financialRepository.deleteById(id);
     }
 
 }

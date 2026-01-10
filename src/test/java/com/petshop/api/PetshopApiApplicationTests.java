@@ -9,5 +9,4 @@ class PetshopApiApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }

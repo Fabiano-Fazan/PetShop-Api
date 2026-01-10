@@ -62,7 +62,7 @@ public class VeterinarianService {
     public void deleteVeterinarian(UUID id){
         var veterinarian = validatorEntities.validate(id, veterinarianRepository, "Veterinarian");
         canDelete(veterinarian);
-        veterinarianRepository.deleteById(id);
+        veterinarianRepository.delete(veterinarian);
     }
 
     private void canDelete(Veterinarian veterinarian) {

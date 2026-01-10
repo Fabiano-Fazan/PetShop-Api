@@ -71,7 +71,7 @@ public class ProductService {
     public void deleteProduct(UUID id) {
         var product = validatorEntities.validate(id, productRepository, "Product");
         canDelete(product);
-        productRepository.deleteById(id);
+        productRepository.delete(product);
     }
 
     private void canDelete(Product product) {

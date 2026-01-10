@@ -20,7 +20,7 @@ public class SaleGenerator {
 
     public ProductSale generateProductSale(CreateProductSaleDto dto, Sale sale){
         var product = productRepository.findWithLockById(dto.getProductId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + dto.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
 
         return ProductSale.builder()
                 .product(product)
