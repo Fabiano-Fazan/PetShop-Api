@@ -27,7 +27,7 @@ public class ProductCategoryService {
 
 
     public ProductCategoryResponseDto getProductCategoryById(UUID id){
-        var productCategory = validatorEntities.validate(id, productCategoryRepository, "Product Category");
+        var productCategory = validatorEntities.validate(id, productCategoryRepository, "Product category");
         return productCategoryMapper.toResponseDto(productCategory);
     }
 
@@ -49,14 +49,14 @@ public class ProductCategoryService {
 
     @Transactional
     public ProductCategoryResponseDto updateProductCategory(UUID id, UpdateProductCategoryDto updateProductCategoryDTO) {
-        ProductCategory productCategory = validatorEntities.validate(id, productCategoryRepository, "Product Category");
+        ProductCategory productCategory = validatorEntities.validate(id, productCategoryRepository, "Product category");
         productCategoryMapper.updateProductCategoryFromDto(updateProductCategoryDTO, productCategory);
         return productCategoryMapper.toResponseDto(productCategoryRepository.save(productCategory));
     }
 
     @Transactional
     public void deleteProductCategory(UUID id) {
-        var productCategory = validatorEntities.validate(id, productCategoryRepository, "Product Category");
+        var productCategory = validatorEntities.validate(id, productCategoryRepository, "Product category");
         canDelete(productCategory);
         productCategoryRepository.delete(productCategory);
     }

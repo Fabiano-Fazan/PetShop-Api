@@ -27,7 +27,7 @@ public class MonetaryTypeService {
 
 
     public MonetaryTypeResponseDto getMonetaryTypeById(UUID id){
-        var monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary Type");
+        var monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary type");
         return monetaryTypeMapper.toResponseDto(monetaryType);
     }
 
@@ -49,14 +49,14 @@ public class MonetaryTypeService {
 
     @Transactional
     public MonetaryTypeResponseDto updateMonetaryType(UUID id, UpdateMonetaryTypeDto dto){
-        MonetaryType monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary Type");
+        MonetaryType monetaryType = validatorEntities.validate(id, monetaryTypeRepository, "Monetary type");
         monetaryTypeMapper.updateMonetaryTypeFromDto(dto, monetaryType);
         return monetaryTypeMapper.toResponseDto(monetaryTypeRepository.save(monetaryType));
     }
 
     @Transactional
     public void deleteMonetaryType(UUID id){
-        var monetaryType = validatorEntities.validate(id,monetaryTypeRepository,"Monetary Type");
+        var monetaryType = validatorEntities.validate(id,monetaryTypeRepository,"Monetary type");
         canDelete(monetaryType);
         monetaryTypeRepository.delete(monetaryType);
     }

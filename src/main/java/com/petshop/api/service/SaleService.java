@@ -60,7 +60,7 @@ public class SaleService {
         dto.getProductSales().forEach(item -> {
             var productSale = saleGenerator.generateProductSale(item, newSale);
             newSale.getProductSales().add(productSale);
-                });
+        });
         BigDecimal totalValue = saleGenerator.calculateSaleTotal(dto);
         newSale.setTotalValue(totalValue);
         var savedSale = saleRepository.save(newSale);

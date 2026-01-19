@@ -1,6 +1,5 @@
 package com.petshop.api.domain.medicalAppointment;
 
-
 import com.petshop.api.domain.validator.ValidatorEntities;
 import com.petshop.api.dto.update.UpdateMedicalAppointmentDto;
 import com.petshop.api.model.entities.MedicalAppointment;
@@ -24,6 +23,7 @@ public class AppointmentUpdater {
     private final AppointmentTimeCalculator timeCalculator;
 
     public void updateAppointment(MedicalAppointment medicalAppointment, @NonNull UpdateMedicalAppointmentDto updateDto){
+
         if(updateDto.getClientId() != null){
             medicalAppointment.setClient(validatorEntities.validate(updateDto.getClientId(), clientRepository, "Client"));
         }
@@ -34,7 +34,6 @@ public class AppointmentUpdater {
 
         if(updateDto.getVeterinarianId() != null){
             medicalAppointment.setVeterinarian(validatorEntities.validate(updateDto.getVeterinarianId(), veterinarianRepository, "Veterinarian"));
-
         }
 
         if(updateDto.getAppointmentStartTime() != null || updateDto.getDurationMinutes() != null){
@@ -48,14 +47,22 @@ public class AppointmentUpdater {
                     medicalAppointment.getDurationMinutes()
             );
 
-        if (updateDto.getAppointmentStatus() != null) {
-            medicalAppointment.setAppointmentStatus(updateDto.getAppointmentStatus());
-        }
             LocalDateTime end = timeCalculator.end(start, duration);
+
             medicalAppointment.setAppointmentStartTime(start);
             medicalAppointment.setAppointmentEndTime(end);
             medicalAppointment.setDurationMinutes(duration);
+        }
+
+        if (updateDto.getAppointmentStatus() != null) {
+            medicalAppointment.setAppointmentStatus(updateDto.getAppointmentStatus());
+        }
+
+        if (updateDto.getNotes() != null) {
             medicalAppointment.setNotes(updateDto.getNotes());
+        }
+
+        if (updateDto.getTreatment() != null) {
             medicalAppointment.setTreatment(updateDto.getTreatment());
         }
     }
