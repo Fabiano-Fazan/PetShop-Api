@@ -4,7 +4,7 @@ Uma API RESTful para o gerenciamento de um PetShop. O sistema orquestra desde o 
 
 ## 📋 Sobre o Projeto
 
-Este projeto foi desenvolvido para desenvoler meus estudos. O sistema não apenas realiza CRUDs básicos, mas gerencia o ciclo de vida das operações comerciais:
+Este projeto foi desenvolvido para testar meus estudos. O sistema não apenas realiza CRUDs básicos, mas gerencia o ciclo de vida das operações comerciais:
 
 * **Vendas:** Ao finalizar uma venda, o sistema automaticamente baixa o estoque e gera os registros financeiros (contas a receber).
 * **Agendamentos:** Validação inteligente de conflitos de horários para veterinários.
@@ -45,9 +45,9 @@ Este projeto foi desenvolvido para desenvoler meus estudos. O sistema não apena
 3.  **Execute a aplicação:**
     Utilize o wrapper do Gradle (não é necessário ter o Gradle instalado globalmente).
     * **Windows:**
-        ```cmd
-        gradlew.bat bootRun
-        ```
+     ```cmd
+     gradlew.bat bootRun
+     ```
 
 A API estará disponível em: `http://localhost:8080`
 
