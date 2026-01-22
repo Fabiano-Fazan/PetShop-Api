@@ -25,7 +25,7 @@ Este projeto foi desenvolvido para testar meus estudos. O sistema não apenas re
 ## 📦 Como Rodar o Projeto
 
 ### Pré-requisitos
-* Java 17+ instalado.
+* Java 21+ instalado.
 * Docker e Docker Compose (Opcional, mas recomendado para o Banco de Dados).
 
 ### Passo a Passo
