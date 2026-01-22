@@ -130,6 +130,26 @@ class AnimalServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Should return page of animals when searching by species")
+    void getAnimalBySpecies_ShouldReturnPage_WhenSpeciesExists(){
+
+        String species = "vira-lata";
+        Pageable pageable = PageRequest.of(0,10);
+        Animal animal = new Animal();
+        AnimalResponseDto responseDto = new AnimalResponseDto();
+        Page<Animal> animalPage = new PageImpl<>(List.of(animal));
+
+        when(animalRepository.findBySpeciesContainingIgnoreCase(species, pageable)).thenReturn(animalPage);
+        when(animalMapper.toResponseDto(animal)).thenReturn(responseDto);
+
+        Page<AnimalResponseDto> result = animalService.getAnimalsBySpecies(species, pageable);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).hasSize(1);
+
+    }
+
 
     @Test
     @DisplayName("Should create animal successfully")
