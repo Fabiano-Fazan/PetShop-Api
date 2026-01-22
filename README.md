@@ -12,7 +12,7 @@ Este projeto foi desenvolvido para testar meus estudos. O sistema não apenas re
 
 ## 🚀 Tecnologias Utilizadas
 
-* **Linguagem:** Java 17
+* **Linguagem:** Java 21
 * **Framework:** Spring Boot 3 (Web, Data JPA, Validation)
 * **Segurança:** Spring Security + JWT (JSON Web Token)
 * **Banco de Dados:** PostgreSQL (Produção/Dev)
